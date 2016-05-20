@@ -6,7 +6,8 @@ classdef legtools
 % newer.
 %
 % legtools methods:
-%      append - Adds string(s) to the end of the legend.
+%      append  - Adds string(s) to the end of the legend.
+%      permute - Rearrange the legend entries.
 %
 % See also legend
 
@@ -69,6 +70,50 @@ classdef legtools
             newlegendstr = [lh.String newStrings];  % Need to generate this before adding new plot objects
             lh.PlotChildren = plothandles;
             lh.String = newlegendstr;
+        end
+
+
+        function permute(lh, order)
+            % PERMUTE rearranges the entries of the specified Legend 
+            % object, lh, so they are then the order specified by the 
+            % vector order. order must be the same length as the number of 
+            % legend entries in lh. All elements of order must be unique, 
+            % real, positive, integer values.
+            legtools.verchk()
+
+            % Make sure lh exists and is a legend object
+            if ~exist('lh', 'var') || ~isa(lh, 'matlab.graphics.illustration.Legend')
+                error('legtools:permute:InvalidLegendHandle', ...
+                      'Invalid legend handle provided' ...
+                      );
+            end
+
+            % Pick first legend handle if more than one is passed
+            if numel(lh) > 1
+                warning('legtools:permute:TooManyLegends', ...
+                        '%u Legend objects specified, modifying the first one only', ...
+                        numel(lh) ...
+                        );
+                lh = lh(1);
+            end
+
+            % Catch length & uniqueness issues with order, let MATLAB deal
+            % with the rest.
+            if numel(order) ~= numel(lh.String)
+                error('legtools:permute:TooManyIndices', ...
+                      'Number of values in order must match the number of legend strings' ...
+                  );
+            end
+            if numel(unique(order)) < numel(lh.String)
+                error('legtools:permute:NotEnoughUniqueIndices', ...
+                      'order must contain enough unique indices to index all legend strings' ...
+                      );
+            end
+
+            % Permute the legend data source(s) and string(s)
+            % MATLAB has a listener on the PlotChildren so when their order
+            % is modified the string order is changed with it
+            lh.PlotChildren = lh.PlotChildren(order);
         end
     end
 
