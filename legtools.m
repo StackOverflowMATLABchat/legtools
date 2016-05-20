@@ -128,10 +128,10 @@ classdef legtools
         
         
         function remove(lh, remidx)
-            % REMOVE removes the legend indices at the locations specified
-            % by remidx. All elements of order must be real, positive,
-            % integer values.
-            % If remidx specifies all the legend entries the Legend
+            % REMOVE removes the legend entries of the Legend object, lh,
+            % at the locations specified by remidx. All elements of remidx 
+            % must be real, positive, integer values.
+            % If remidx specifies all the legend entries the, Legend
             % object is deleted
             legtools.verchk()
             
