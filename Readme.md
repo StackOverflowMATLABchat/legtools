@@ -1,4 +1,4 @@
-![Minimum Version](https://img.shields.io/badge/Requires-R2014b%20%28v8.4%29-orange.svg)
+[![MATLAB FEX](https://img.shields.io/badge/MATLAB%20FEX-legtools-brightgreen.svg)](http://www.mathworks.com/matlabcentral/fileexchange/57241-hg2-legend-tools) ![Minimum Version](https://img.shields.io/badge/Requires-R2014b%20%28v8.4%29-orange.svg)
 
 # LEGTOOLS
 `legtools` is a MATLAB class definition providing the user with a set of methods to modify existing Legend objects.
@@ -34,6 +34,8 @@ The legend will only be updated with the new strings if the number of strings in
     plot(x, y2, 'bs');
     legtools.append(lh, 'Square')
 
+![append1](https://github.com/sco1/sco1.github.io/blob/master/legtools/append1.png)
+
 #### Adding two legend entries
 
     % Sample data
@@ -52,6 +54,7 @@ The legend will only be updated with the new strings if the number of strings in
     plot(x, y2, 'bs', x, y3, 'g+');
     legtools.append(lh, {'Square', 'Plus'})
 
+![append2](https://github.com/sco1/sco1.github.io/blob/master/legtools/append2.png)
 
 <a name="permute"></a>
 ### *legtools*.**permute**(*legendhandle*, *newOrder*)
@@ -72,12 +75,14 @@ Rearrange the entries of the specified `Legend` object, `legendhandle`, so they 
 
     legtools.permute(lh, [3, 1, 2]);
 
+![permute](https://github.com/sco1/sco1.github.io/blob/master/legtools/permute.png)
+
 <a name="remove"></a>
 ### *legtools*.**remove**(*legendhandle*, *removeidx*)
 #### Description            
 Remove the legend entries of the `Legend` object, `legendhandle`, at the locations specified by `removeidx`. All elements of `removeidx` must be real, positive, integer values.
 
-If `removeidx` specifies all the legend entries the `Legend` object, `legendhandle` is deleted.
+If `removeidx` specifies all the legend entries the `Legend` object, `legendhandle`, is deleted.
 
 #### Example
     % Sample data
@@ -92,3 +97,5 @@ If `removeidx` specifies all the legend entries the `Legend` object, `legendhand
     lh = legend({'One', 'Two', 'Three'}, 'Location', 'NorthWest');
 
     legtools.remove(lh, [3, 1]);
+
+![remove](https://github.com/sco1/sco1.github.io/blob/master/legtools/remove.png)
