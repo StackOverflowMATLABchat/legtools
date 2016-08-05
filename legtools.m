@@ -6,9 +6,10 @@ classdef legtools
     % newer.
     %
     % legtools methods:
-    %      append  - Add one or more entries to the end of the legend
-    %      permute - Rearrange the legend entries
-    %      remove  - Remove one or more legend entries
+    %      append   - Add one or more entries to the end of the legend
+    %      permute  - Rearrange the legend entries
+    %      remove   - Remove one or more legend entries
+    %      adddummy - Add legend entry for unsupported graphics objects
     %
     % See also legend
     
@@ -164,9 +165,92 @@ classdef legtools
                         'All legend entries specified for removal, deleting Legend Object' ...
                         );
             else
+                % Check legend entries to be removed for dummy lineseries 
+                % objects and delete them
+                count = 1;
+                for ii = remidx
+                    % Our dummy lineseries contain a single NaN YData entry
+                    if length(lh.PlotChildren(ii).YData) == 1 && isnan(lh.PlotChildren(ii).YData)
+                        % Deleting the graphics object here also deletes it
+                        % from the legend, which screws up the one-liner
+                        % plot children removal. Instead store the objects
+                        % to be deleted and delete them after the legend is
+                        % properly modified
+                        objtodelete(count) = lh.PlotChildren(ii);
+                        count = count + 1;
+                    end
+                end
                 lh.PlotChildren(remidx) = [];
+                delete(objtodelete);
             end
         end
+        
+        function adddummy(lh, newString, varargin)
+            % ADDDUMMY adds a legend entry with display name newString to
+            % the Legend Object, lh, for graphics objects that are not 
+            % supported by legend.
+            %
+            % Specify linestyle options by MATLAB's PLOT syntax. If none
+            % are specified, linestyle behavior mirrors that of PLOT. If a
+            % DisplayName is specified it will be overwritten by newString
+            %
+            % ADDDUMMY adds a Chart Line Object to the parent axes of lh
+            % consisting of a single NaN value so nothing is rendered in
+            % the axes but it provides a valid object for legend to include
+            % LEGTOOLS.REMOVE will remove this Chart Line Object if its
+            % legend entry is removed
+            %
+            % ADDDUMMY currently only supports creation of one new legend
+            % object
+            legtools.verchk()
+            
+            % Make sure lh exists and is a legend object
+            if ~exist('lh', 'var') || ~isa(lh, 'matlab.graphics.illustration.Legend')
+                error('legtools:adddummy:InvalidLegendHandle', ...
+                      'Invalid legend handle provided' ...
+                      );
+            end
+            
+            % Pick first legend handle if more than one is passed
+            if numel(lh) > 1
+                warning('legtools:adddummy:TooManyLegends', ...
+                        '%u Legend objects specified, modifying the first one only', ...
+                        numel(lh) ...
+                        );
+                lh = lh(1);
+            end
+            
+            % Make sure newString exists & isn't empty
+            if ~exist('newString', 'var') || isempty(newString)
+                error('legtools:adddummy:EmptyStringInput', ...
+                      'No strings provided' ...
+                      );
+            end
+            
+            % Make sure newString is a cell array
+            if ischar(newString)
+                % Input string is a character array, assume it's a single
+                % string and dump into a cell
+                newString = {newString};
+            end
+            
+            % Take only the first newString entry
+            if numel(newString) > 1
+                warning('legtools:adddummy:TooManyStrings', ...
+                    '%u New strings specified, adding the first one only', ...
+                    numel(newString) ...
+                    );
+                newString = newString(1);
+            end
+            
+            parentaxes = lh.PlotChildren(1).Parent;
+            hold(parentaxes, 'on');
+            plot(parentaxes, NaN, varargin{:});  % Leave varargin input validation up to plot
+            hold(parentaxes, 'off');
+            
+            legtools.append(lh, newString);  % Add legend entry
+        end
+        
     end
     
     methods (Static, Access = private)
