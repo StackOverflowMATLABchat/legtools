@@ -165,11 +165,24 @@ classdef legtools
                         'All legend entries specified for removal, deleting Legend Object' ...
                         );
             else
+                % Check legend entries to be removed for dummy lineseries 
+                % objects and delete them
+                count = 1;
+                for ii = remidx
+                    % Our dummy lineseries contain a single NaN YData entry
+                    if length(lh.PlotChildren(ii).YData) == 1 && isnan(lh.PlotChildren(ii).YData)
+                        % Deleting the graphics object here also deletes it
+                        % from the legend, which screws up the one-liner
+                        % plot children removal. Instead store the objects
+                        % to be deleted and delete them after the legend is
+                        % properly modified
+                        objtodelete(count) = lh.PlotChildren(ii);
+                        count = count + 1;
+                    end
+                end
                 lh.PlotChildren(remidx) = [];
+                delete(objtodelete);
             end
-            
-            % TODO: Check for dummy lineseries objects and delete them if
-            % they exist
         end
         
         function adddummy(lh, newString, varargin)
