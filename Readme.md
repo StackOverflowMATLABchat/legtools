@@ -131,4 +131,4 @@ Specify `linestyle` options by MATLAB's `plot` syntax. If none are specified, `l
     % Add a legend entry for the box!
     legtools.adddummy(lh, 'A Red Rectangle', 'Color', 'red')
 
-![addummy](https://github.com/sco1/sco1.github.io/blob/master/legtools/addummy.png)
+![addummy](https://github.com/sco1/sco1.github.io/blob/master/legtools/adddummy.png)
