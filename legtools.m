@@ -34,22 +34,7 @@ classdef legtools
             % the associated axes object (e.g. if you have 2 lineseries and
             % 2 legend entries already no changes will be made).
             legtools.verchk()
-            
-            % Make sure lh exists and is a legend object
-            if ~exist('lh', 'var') || ~isa(lh, 'matlab.graphics.illustration.Legend')
-                error('legtools:append:InvalidLegendHandle', ...
-                      'Invalid legend handle provided' ...
-                      );
-            end
-            
-            % Pick first legend handle if more than one is passed
-            if numel(lh) > 1
-                warning('legtools:append:TooManyLegends', ...
-                        '%u Legend objects specified, modifying the first one only', ...
-                        numel(lh) ...
-                        );
-                lh = lh(1);
-            end
+            lh = legtools.handlecheck('append', lh);
             
             % Make sure newString exists & isn't empty
             if ~exist('newStrings', 'var') || isempty(newStrings)
@@ -58,17 +43,7 @@ classdef legtools
                       );
             end
             
-            % Validate the input strings
-            if ischar(newStrings)
-                % Input string is a character array, assume it's a single
-                % string and dump into a cell
-                newStrings = {newStrings};
-            end
-            
-            % Check shape of newStrings and make sure it's 1D
-            if size(newStrings, 1) > 1
-                newStrings = reshape(newStrings', 1, []);
-            end
+            newStrings = legtools.strcheck('append', newStrings);
             
             % To make sure we target the right axes, pull the legend's
             % PlotChildren and get their parent axes object
@@ -91,22 +66,7 @@ classdef legtools
             % legend entries in lh. All elements of order must be unique,
             % real, positive, integer values.
             legtools.verchk()
-            
-            % Make sure lh exists and is a legend object
-            if ~exist('lh', 'var') || ~isa(lh, 'matlab.graphics.illustration.Legend')
-                error('legtools:permute:InvalidLegendHandle', ...
-                      'Invalid legend handle provided' ...
-                      );
-            end
-            
-            % Pick first legend handle if more than one is passed
-            if numel(lh) > 1
-                warning('legtools:permute:TooManyLegends', ...
-                        '%u Legend objects specified, modifying the first one only', ...
-                        numel(lh) ...
-                        );
-                lh = lh(1);
-            end
+            lh = legtools.handlecheck('permute', lh);
             
             % Catch length & uniqueness issues with order, let MATLAB deal
             % with the rest.
@@ -115,6 +75,7 @@ classdef legtools
                       'Number of values in order must match the number of legend strings' ...
                       );
             end
+            
             if numel(unique(order)) < numel(lh.String)
                 error('legtools:permute:NotEnoughUniqueIndices', ...
                       'order must contain enough unique indices to index all legend strings' ...
@@ -129,33 +90,19 @@ classdef legtools
         
         
         function remove(lh, remidx)
-            % REMOVE removes the legend entries of the Legend object, lh,
+            % REMOVE removes the legend entries of the legend object, lh,
             % at the locations specified by remidx. All elements of remidx 
             % must be real, positive, integer values.
-            % If remidx specifies all the legend entries the, Legend
+            %
+            % If remidx specifies all the legend entries, the legend
             % object is deleted
             legtools.verchk()
-            
-            % Make sure lh exists and is a legend object
-            if ~exist('lh', 'var') || ~isa(lh, 'matlab.graphics.illustration.Legend')
-                error('legtools:remove:InvalidLegendHandle', ...
-                      'Invalid legend handle provided' ...
-                      );
-            end
-            
-            % Pick first legend handle if more than one is passed
-            if numel(lh) > 1
-                warning('legtools:remove:TooManyLegends', ...
-                        '%u Legend objects specified, modifying the first one only', ...
-                        numel(lh) ...
-                        );
-                lh = lh(1);
-            end
+            lh = legtools.handlecheck('remove', lh);
             
             % Catch length issues, let MATLAB deal with the rest
             if numel(unique(remidx)) > numel(lh.String)
                 error('legtools:remove:TooManyIndices', ...
-                      'Number of unique values in remidx must match the number of legend entries' ...
+                      'Number of unique values in remidx exceeds number of legend entries' ...
                       );
             end
             
@@ -203,36 +150,16 @@ classdef legtools
             % ADDDUMMY currently only supports creation of one new legend
             % object
             legtools.verchk()
-            
-            % Make sure lh exists and is a legend object
-            if ~exist('lh', 'var') || ~isa(lh, 'matlab.graphics.illustration.Legend')
-                error('legtools:adddummy:InvalidLegendHandle', ...
-                      'Invalid legend handle provided' ...
-                      );
-            end
-            
-            % Pick first legend handle if more than one is passed
-            if numel(lh) > 1
-                warning('legtools:adddummy:TooManyLegends', ...
-                        '%u Legend objects specified, modifying the first one only', ...
-                        numel(lh) ...
-                        );
-                lh = lh(1);
-            end
+            lh = legtools.handlecheck('addummy', lh);
             
             % Make sure newString exists & isn't empty
             if ~exist('newString', 'var') || isempty(newString)
                 error('legtools:adddummy:EmptyStringInput', ...
-                      'No strings provided' ...
+                      'No string provided' ...
                       );
             end
             
-            % Make sure newString is a cell array
-            if ischar(newString)
-                % Input string is a character array, assume it's a single
-                % string and dump into a cell
-                newString = {newString};
-            end
+            newString = legtools.strcheck('adddummy', newString);
             
             % Take only the first newString entry
             if numel(newString) > 1
@@ -260,6 +187,61 @@ classdef legtools
                 error('legtools:UnsupportedMATLABver', ...
                       'MATLAB releases prior to R2014b are not supported' ...
                       );
+            end
+        end
+        
+        function [lh] = handlecheck(src, lh)
+            % Make sure lh exists and is a legend object
+            if ~isa(lh, 'matlab.graphics.illustration.Legend')
+                msgID = sprintf('legtools:%s:InvalidLegendHandle', src);
+                error(msgID, 'Invalid legend handle provided');
+            end
+            
+            % Pick first legend handle if more than one is passed
+            if numel(lh) > 1
+                msgID = sprintf('legtools:%s:TooManyLegends', src);
+                warning(msgID, ...
+                        '%u Legend objects specified, modifying the first one only', ...
+                        numel(lh) ...
+                        );
+                lh = lh(1);
+            end
+        end
+        
+        function [newString] = strcheck(src, newString)
+            % Validate the input strings
+            if ischar(newString)
+                % Input string is a character array, assume it's a single
+                % string and dump into a cell
+                newString = {newString};
+            end
+            
+            % Check to see if we now have a cell array
+            if ~iscell(newString)
+                msgID = sprintf('legtools:%s:InvalidLegendString', src);
+                error(msgID, ...
+                      'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
+                      class(newString), class({}), class('') ...
+                      );
+            end
+            
+            % Check shape of newStrings and make sure it's 1D
+            if size(newString, 1) > 1
+                newString = reshape(newString', 1, []);
+            end
+            
+            % Check to make sure we're only passing strings
+            for ii = 1:length(newString)
+                % Check for characters, let MATLAB handle errors for data
+                % types not compatible with num2str
+                if ~ischar(newString{ii})
+                    msgID = sprintf('legtools:%s:ConvertingInvalidLegendString', src);
+                    warning(msgID, ...
+                        'Input legend ''string'' is of type %s, converting to %s', ...
+                        class(newString{ii}), class('') ...
+                        );
+                    newString{ii} = num2str(newString{ii});
+                end
             end
         end
     end
