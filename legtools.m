@@ -208,7 +208,7 @@ classdef legtools
             end
         end
         
-        function [newString] = strcheck(~, newString)
+        function [newString] = strcheck(src, newString)
             % Validate the input strings
             if ischar(newString)
                 % Input string is a character array, assume it's a single
@@ -216,9 +216,32 @@ classdef legtools
                 newString = {newString};
             end
             
+            % Check to see if we now have a cell array
+            if ~iscell(newString)
+                msgID = sprintf('legtools:%s:InvalidLegendString', src);
+                error(msgID, ...
+                      'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
+                      class(newString), class({}), class('') ...
+                      );
+            end
+            
             % Check shape of newStrings and make sure it's 1D
             if size(newString, 1) > 1
                 newString = reshape(newString', 1, []);
+            end
+            
+            % Check to make sure we're only passing strings
+            for ii = 1:length(newString)
+                % Check for characters, let MATLAB handle errors for data
+                % types not compatible with num2str
+                if ~ischar(newString{ii})
+                    msgID = sprintf('legtools:%s:ConvertingInvalidLegendString', src);
+                    warning(msgID, ...
+                        'Input legend ''string'' is of type %s, converting to %s', ...
+                        class(newString{ii}), class('') ...
+                        );
+                    newString{ii} = num2str(newString{ii});
+                end
             end
         end
     end
