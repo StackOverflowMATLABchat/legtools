@@ -9,7 +9,7 @@ classdef legtools
     %      append   - Add one or more entries to the end of the legend
     %      permute  - Rearrange the legend entries
     %      remove   - Remove one or more legend entries
-    %      adddummy - Add legend entry for unsupported graphics objects
+    %      adddummy - Add one or more entries to the legend for unsupported graphics objects
     %
     % See also legend
     
@@ -66,6 +66,9 @@ classdef legtools
             % legend entries in lh. All elements of order must be unique,
             % real, positive, integer values.
             legtools.verchk()
+            
+            % TODO: Add check for presence of order
+            
             lh = legtools.handlecheck('permute', lh);
             
             % Catch length & uniqueness issues with order, let MATLAB deal
@@ -132,50 +135,52 @@ classdef legtools
             end
         end
         
-        function adddummy(lh, newString, varargin)
-            % ADDDUMMY adds a legend entry with display name newString to
+        function adddummy(lh, newStrings, plotParams)
+            % ADDDUMMY adds a legend entry with display name newStrings to
             % the Legend Object, lh, for graphics objects that are not 
             % supported by legend.
             %
-            % Specify linestyle options by MATLAB's PLOT syntax. If none
-            % are specified, linestyle behavior mirrors that of PLOT. If a
-            % DisplayName is specified it will be overwritten by newString
+            % For a single dummy legend entry, plotParams is defined as a 
+            % cell array of strings, mirroring MATLAB's PLOT syntax.
+            % Entries can be either a LineSpec or a series of Name/Value
+            % pairs. For multiple dummy legend entries, plotParams is 
+            % defined as a cell array of cells where each top-level cell 
+            % corresponds to a string in newStrings.
             %
             % ADDDUMMY adds a Chart Line Object to the parent axes of lh
             % consisting of a single NaN value so nothing is rendered in
             % the axes but it provides a valid object for legend to include
             % LEGTOOLS.REMOVE will remove this Chart Line Object if its
-            % legend entry is removed
-            %
-            % ADDDUMMY currently only supports creation of one new legend
-            % object
+            % legend entry is removed.
+
             legtools.verchk()
             lh = legtools.handlecheck('addummy', lh);
             
-            % Make sure newString exists & isn't empty
-            if ~exist('newString', 'var') || isempty(newString)
+            % Make sure newStrings exists & isn't empty
+            if ~exist('newStrings', 'var') || isempty(newStrings)
                 error('legtools:adddummy:EmptyStringInput', ...
                       'No string provided' ...
                       );
             end
             
-            newString = legtools.strcheck('adddummy', newString);
+            newStrings = legtools.strcheck('adddummy', newStrings);
             
-            % Take only the first newString entry
-            if numel(newString) > 1
-                warning('legtools:adddummy:TooManyStrings', ...
-                    '%u New strings specified, adding the first one only', ...
-                    numel(newString) ...
-                    );
-                newString = newString(1);
+            % See if we have a character input for the single addition case
+            % and put it into a cell
+            if ischar(plotParams)
+                plotParams = {{plotParams}};
             end
+            
+            % TODO: More error checking on plotParams
             
             parentaxes = lh.PlotChildren(1).Parent;
             hold(parentaxes, 'on');
-            plot(parentaxes, NaN, varargin{:});  % Leave varargin input validation up to plot
+            for ii = 1:length(newStrings)
+                plot(parentaxes, NaN, plotParams{ii}{:});  % Leave input validation up to plot
+            end
             hold(parentaxes, 'off');
             
-            legtools.append(lh, newString);  % Add legend entry
+            legtools.append(lh, newStrings);  % Add legend entries
         end
         
     end
