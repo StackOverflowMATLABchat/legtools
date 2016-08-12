@@ -136,12 +136,11 @@ classdef legtools
         end
         
         function adddummy(lh, newStrings, plotParams)
-            % ADDDUMMY adds a legend entry with display name newStrings to
-            % the Legend Object, lh, for graphics objects that are not 
-            % supported by legend.
+            % ADDDUMMY appends strings, newStrings, to the Legend Object, 
+            % lh, for graphics objects that are not supported by legend.
             %
             % For a single dummy legend entry, plotParams is defined as a 
-            % cell array of strings, mirroring MATLAB's PLOT syntax.
+            % cell array of strings that follow MATLAB's PLOT syntax.
             % Entries can be either a LineSpec or a series of Name/Value
             % pairs. For multiple dummy legend entries, plotParams is 
             % defined as a cell array of cells where each top-level cell 
@@ -150,6 +149,7 @@ classdef legtools
             % ADDDUMMY adds a Chart Line Object to the parent axes of lh
             % consisting of a single NaN value so nothing is rendered in
             % the axes but it provides a valid object for legend to include
+            %
             % LEGTOOLS.REMOVE will remove this Chart Line Object if its
             % legend entry is removed.
 
@@ -171,7 +171,7 @@ classdef legtools
                 plotParams = {{plotParams}};
             end
             
-            % TODO: More error checking on plotParams
+            % TODO: More plotParams error checking
             
             parentaxes = lh.PlotChildren(1).Parent;
             hold(parentaxes, 'on');
