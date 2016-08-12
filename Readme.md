@@ -9,7 +9,7 @@ This is an HG2 specific implementation and requires MATLAB R2014b or newer.
 * [`append`](#append)  - Add one or more entries to the end of the legend  
 * [`permute`](#permute) - Rearrange the legend entries  
 * [`remove`](#remove)  - Remove one or more legend entries
-* [`adddummy`](#adddummy) - Add legend entry for unsupported graphics objects
+* [`adddummy`](#adddummy) - Add legend entries for one or more unsupported graphics objects
 
 <a name="append"></a>
 ### *legtools*.**append**(*legendhandle*, *newStrings*)
