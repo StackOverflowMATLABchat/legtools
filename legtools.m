@@ -55,10 +55,10 @@ classdef legtools
             parentaxes = lh.PlotChildren(1).Parent;
             
             % Get line object handles
-            plothandles = flipud(parentaxes.Children);  % Flip so order matches
+            plothandles = flipud(parentaxes.Children); % Flip so order matches
             
             % Update legend with line object handles & new string array
-            newlegendstr = [lh.String newStrings];  % Need to generate this before adding new plot objects
+            newlegendstr = [lh.String newStrings]; % Need to generate this before adding new plot objects
             lh.PlotChildren = plothandles;
             lh.String = newlegendstr;
         end % of append method
