@@ -222,7 +222,7 @@ classdef legtools
             if ischar(newString)
                 % Input string is a character array, assume it's a single
                 % string and dump into a cell
-                newString = {newString};
+                newString = cellstr(newString);
             end
             
             % Message identifier for cellstr assertion below
@@ -251,6 +251,9 @@ classdef legtools
             
             % Check if we now have a cell array of strings
             assert(iscellstr(newString), msgID, msgArgs{:})
+            
+            % Check shape of newStrings and make sure it's 1D
+            newString = newString(:)';
         end
     end
 end
