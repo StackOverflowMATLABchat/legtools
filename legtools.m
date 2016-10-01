@@ -217,7 +217,7 @@ classdef legtools
             end
         end
         
-        function [newString] = strcheck(src, newString)
+        function newString = strcheck(src, newString)
             % Validate the input strings
             if ischar(newString)
                 % Input string is a character array, assume it's a single
