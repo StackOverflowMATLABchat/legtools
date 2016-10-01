@@ -37,15 +37,12 @@ classdef legtools
             %    For example, if you have plotted two lines and the current
             %    legend contains one entry, appending three new entries
             %    will only append the first of them.
+            % Check number of input arguments
+            narginchk(2,2)
+            
             legtools.verchk
             lh = legtools.handlecheck('append', lh);
             
-            % Make sure newString exists & isn't empty
-            if ~exist('newStrings', 'var') || isempty(newStrings)
-                error('legtools:append:EmptyStringInput', ...
-                    'No strings provided' ...
-                    );
-            end
             
             newStrings = legtools.strcheck('append', newStrings);
             
@@ -155,15 +152,12 @@ classdef legtools
             % LEGTOOLS.REMOVE will remove this Chart Line Object if its
             % legend entry is removed.
             
+            % Check number of input arguments
+            narginchk(3,3)
+            
             legtools.verchk
             lh = legtools.handlecheck('addummy', lh);
             
-            % Make sure newStrings exists & isn't empty
-            if ~exist('newStrings', 'var') || isempty(newStrings)
-                error('legtools:adddummy:EmptyStringInput', ...
-                    'No string provided' ...
-                    );
-            end
             
             newStrings = legtools.strcheck('adddummy', newStrings);
             
@@ -216,6 +210,13 @@ classdef legtools
         end % of handlecheck method
         
         function newString = strcheck(src, newString)
+            % Make sure newString exists & isn't empty
+            assert( ...
+                ~isempty(newString), ...
+                'legtools:append:EmptyStringInput', ...
+                'No strings provided.' ...
+                )
+            
             % Validate the input strings
             if ischar(newString)
                 % Input string is a character array, assume it's a single
