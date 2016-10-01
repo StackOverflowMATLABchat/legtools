@@ -201,7 +201,7 @@ classdef legtools
         
         function [lh] = handlecheck(src, lh)
             % Make sure lh exists and is a legend object
-            if ~isa(lh, 'matlab.graphics.illustration.Legend')
+            if ~isgraphics(lh,'legend')
                 msgID = sprintf('legtools:%s:InvalidLegendHandle', src);
                 error(msgID, 'Invalid legend handle provided');
             end
