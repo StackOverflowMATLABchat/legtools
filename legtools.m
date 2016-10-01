@@ -16,8 +16,8 @@ classdef legtools
         function obj = legtools
             % Dummy constructor so we don't return an empty class instance
             clear obj
-        end
-    end
+        end % of constructor
+    end % of methods
     
     methods (Static)
         function append(lh, newStrings)
@@ -60,8 +60,7 @@ classdef legtools
             newlegendstr = [lh.String newStrings];  % Need to generate this before adding new plot objects
             lh.PlotChildren = plothandles;
             lh.String = newlegendstr;
-        end
-        
+        end % of append method
         
         function permute(lh, order)
             % PERMUTE rearranges the entries of the specified Legend
@@ -93,8 +92,7 @@ classdef legtools
             % MATLAB has a listener on the PlotChildren so when their order
             % is modified the string order is changed with it
             lh.PlotChildren = lh.PlotChildren(order);
-        end
-        
+        end % of permute method
         
         function remove(lh, remidx)
             % REMOVE removes the legend entries of the legend object, lh,
@@ -137,7 +135,7 @@ classdef legtools
                 lh.PlotChildren(remidx) = [];
                 delete(objtodelete);
             end
-        end
+        end % of remove method
         
         function adddummy(lh, newStrings, plotParams)
             % ADDDUMMY appends strings, newStrings, to the Legend Object,
@@ -185,9 +183,8 @@ classdef legtools
             hold(parentaxes, 'off');
             
             legtools.append(lh, newStrings);  % Add legend entries
-        end
-        
-    end
+        end % of adddummy method
+    end % of Static methods
     
     methods (Static, Access = private)
         function verchk
@@ -196,7 +193,7 @@ classdef legtools
                 error('legtools:UnsupportedMATLABver', ...
                     'MATLAB releases prior to R2014b are not supported.')
             end
-        end
+        end % of verchk method
         
         function lh = handlecheck(src, lh)
             % Make sure lh exists and is a legend object
@@ -216,7 +213,7 @@ classdef legtools
                     )
                 lh = lh(1);
             end
-        end
+        end % of handlecheck method
         
         function newString = strcheck(src, newString)
             % Validate the input strings
@@ -255,6 +252,6 @@ classdef legtools
             
             % Check shape of newStrings and make sure it's 1D
             newString = newString(:)';
-        end
-    end
+        end % of strcheck method
+    end % of Static, Access = private methods
 end
