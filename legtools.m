@@ -39,8 +39,8 @@ classdef legtools
             % Make sure newString exists & isn't empty
             if ~exist('newStrings', 'var') || isempty(newStrings)
                 error('legtools:append:EmptyStringInput', ...
-                      'No strings provided' ...
-                      );
+                    'No strings provided' ...
+                    );
             end
             
             newStrings = legtools.strcheck('append', newStrings);
@@ -75,14 +75,14 @@ classdef legtools
             % with the rest.
             if numel(order) ~= numel(lh.String)
                 error('legtools:permute:TooManyIndices', ...
-                      'Number of values in order must match the number of legend strings' ...
-                      );
+                    'Number of values in order must match the number of legend strings' ...
+                    );
             end
             
             if numel(unique(order)) < numel(lh.String)
                 error('legtools:permute:NotEnoughUniqueIndices', ...
-                      'order must contain enough unique indices to index all legend strings' ...
-                      );
+                    'order must contain enough unique indices to index all legend strings' ...
+                    );
             end
             
             % Permute the legend data source(s) and string(s)
@@ -94,7 +94,7 @@ classdef legtools
         
         function remove(lh, remidx)
             % REMOVE removes the legend entries of the legend object, lh,
-            % at the locations specified by remidx. All elements of remidx 
+            % at the locations specified by remidx. All elements of remidx
             % must be real, positive, integer values.
             %
             % If remidx specifies all the legend entries, the legend
@@ -105,17 +105,17 @@ classdef legtools
             % Catch length issues, let MATLAB deal with the rest
             if numel(unique(remidx)) > numel(lh.String)
                 error('legtools:remove:TooManyIndices', ...
-                      'Number of unique values in remidx exceeds number of legend entries' ...
-                      );
+                    'Number of unique values in remidx exceeds number of legend entries' ...
+                    );
             end
             
             if numel(unique(remidx)) == numel(lh.String)
                 delete(lh);
                 warning('legtools:remove:LegendDeleted', ...
-                        'All legend entries specified for removal, deleting Legend Object' ...
-                        );
+                    'All legend entries specified for removal, deleting Legend Object' ...
+                    );
             else
-                % Check legend entries to be removed for dummy lineseries 
+                % Check legend entries to be removed for dummy lineseries
                 % objects and delete them
                 count = 1;
                 for ii = remidx
@@ -136,14 +136,14 @@ classdef legtools
         end
         
         function adddummy(lh, newStrings, plotParams)
-            % ADDDUMMY appends strings, newStrings, to the Legend Object, 
+            % ADDDUMMY appends strings, newStrings, to the Legend Object,
             % lh, for graphics objects that are not supported by legend.
             %
-            % For a single dummy legend entry, plotParams is defined as a 
+            % For a single dummy legend entry, plotParams is defined as a
             % cell array of strings that follow MATLAB's PLOT syntax.
             % Entries can be either a LineSpec or a series of Name/Value
-            % pairs. For multiple dummy legend entries, plotParams is 
-            % defined as a cell array of cells where each top-level cell 
+            % pairs. For multiple dummy legend entries, plotParams is
+            % defined as a cell array of cells where each top-level cell
             % corresponds to a string in newStrings.
             %
             % ADDDUMMY adds a Chart Line Object to the parent axes of lh
@@ -152,15 +152,15 @@ classdef legtools
             %
             % LEGTOOLS.REMOVE will remove this Chart Line Object if its
             % legend entry is removed.
-
+            
             legtools.verchk()
             lh = legtools.handlecheck('addummy', lh);
             
             % Make sure newStrings exists & isn't empty
             if ~exist('newStrings', 'var') || isempty(newStrings)
                 error('legtools:adddummy:EmptyStringInput', ...
-                      'No string provided' ...
-                      );
+                    'No string provided' ...
+                    );
             end
             
             newStrings = legtools.strcheck('adddummy', newStrings);
@@ -190,8 +190,8 @@ classdef legtools
             % Throw error if we're not using R2014b or newer
             if verLessThan('matlab','8.4')
                 error('legtools:UnsupportedMATLABver', ...
-                      'MATLAB releases prior to R2014b are not supported' ...
-                      );
+                    'MATLAB releases prior to R2014b are not supported' ...
+                    );
             end
         end
         
@@ -206,9 +206,9 @@ classdef legtools
             if numel(lh) > 1
                 msgID = sprintf('legtools:%s:TooManyLegends', src);
                 warning(msgID, ...
-                        '%u Legend objects specified, modifying the first one only', ...
-                        numel(lh) ...
-                        );
+                    '%u Legend objects specified, modifying the first one only', ...
+                    numel(lh) ...
+                    );
                 lh = lh(1);
             end
         end
@@ -225,9 +225,9 @@ classdef legtools
             if ~iscell(newString)
                 msgID = sprintf('legtools:%s:InvalidLegendString', src);
                 error(msgID, ...
-                      'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
-                      class(newString), class({}), class('') ...
-                      );
+                    'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
+                    class(newString), class({}), class('') ...
+                    );
             end
             
             % Check shape of newStrings and make sure it's 1D
