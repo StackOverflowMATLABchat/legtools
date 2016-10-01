@@ -225,33 +225,32 @@ classdef legtools
                 newString = {newString};
             end
             
-            % Check to see if we now have a cell array
-            if ~iscell(newString)
-                msgID = sprintf('legtools:%s:InvalidLegendString', src);
-                error(msgID, ...
-                    'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
-                    class(newString), class({}), class('') ...
-                    );
+            % Message identifier for cellstr assertion below
+            msgID = sprintf('legtools:%s:InvalidLegendString', src);
+            
+            % Check MATLAB version for support for string class
+            if verLessThan('matlab','9.1')
+                msgArgs = { ...
+                    ['Invalid Data Type Passed: '...
+                    '%s\nData must be any of the following types: ' ...
+                    '%s, %s'], ...
+                    class(newString), class(cell.empty), class(char) ...
+                    };
+            else
+                % MATLAB R2016b and newer support the string data type
+                % Force conversion to cell array of strings
+                newString = cellstr(newString);
+                msgArgs = { ...
+                    ['Invalid Data Type Passed: %s\n'...
+                    'Data must be any of the following types: ' ...
+                    '%s, %s, %s'], ...
+                    class(newString), ...
+                    class(string), class(cell.empty), class(char) ...
+                    };
             end
             
-            % Check shape of newStrings and make sure it's 1D
-            if size(newString, 1) > 1
-                newString = reshape(newString', 1, []);
-            end
-            
-            % Check to make sure we're only passing strings
-            for ii = 1:length(newString)
-                % Check for characters, let MATLAB handle errors for data
-                % types not compatible with num2str
-                if ~ischar(newString{ii})
-                    msgID = sprintf('legtools:%s:ConvertingInvalidLegendString', src);
-                    warning(msgID, ...
-                        'Input legend ''string'' is of type %s, converting to %s', ...
-                        class(newString{ii}), class('') ...
-                        );
-                    newString{ii} = num2str(newString{ii});
-                end
-            end
+            % Check if we now have a cell array of strings
+            assert(iscellstr(newString), msgID, msgArgs{:})
         end
     end
 end
