@@ -159,10 +159,13 @@ classdef legtools
             % Check number of input arguments
             narginchk(3,3)
             
+            % Check MATLAB version
             legtools.verchk
-            lh = legtools.handlecheck('addummy', lh);
             
+            % Check legend handle
+            lh = legtools.handlecheck('adddummy', lh);
             
+            % Check new strings
             newStrings = legtools.strcheck('adddummy', newStrings);
             
             % See if we have a character input for the single addition case
