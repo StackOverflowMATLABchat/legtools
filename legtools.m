@@ -21,7 +21,7 @@ classdef legtools
     
     methods (Static)
         function append(lh, newStrings)
-            % APPEND Append entries to legend
+            %LEGTOOLS.APPEND Append entries to legend
             %
             %    LEGTOOLS.APPEND(lh,newStrings) appends strings,
             %    newStrings, to the specified Legend object, lh. newStrings
