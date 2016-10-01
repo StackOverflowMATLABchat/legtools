@@ -37,7 +37,7 @@ classdef legtools
             %    For example, if you have plotted two lines and the current
             %    legend contains one entry, appending three new entries
             %    will only append the first of them.
-            legtools.verchk()
+            legtools.verchk
             lh = legtools.handlecheck('append', lh);
             
             % Make sure newString exists & isn't empty
@@ -69,7 +69,7 @@ classdef legtools
             % vector order. order must be the same length as the number of
             % legend entries in lh. All elements of order must be unique,
             % real, positive, integer values.
-            legtools.verchk()
+            legtools.verchk
             
             % TODO: Add check for presence of order
             
@@ -103,7 +103,7 @@ classdef legtools
             %
             % If remidx specifies all the legend entries, the legend
             % object is deleted
-            legtools.verchk()
+            legtools.verchk
             lh = legtools.handlecheck('remove', lh);
             
             % Catch length issues, let MATLAB deal with the rest
@@ -157,7 +157,7 @@ classdef legtools
             % LEGTOOLS.REMOVE will remove this Chart Line Object if its
             % legend entry is removed.
             
-            legtools.verchk()
+            legtools.verchk
             lh = legtools.handlecheck('addummy', lh);
             
             % Make sure newStrings exists & isn't empty
@@ -190,12 +190,11 @@ classdef legtools
     end
     
     methods (Static, Access = private)
-        function verchk()
+        function verchk
             % Throw error if we're not using R2014b or newer
             if verLessThan('matlab','8.4')
                 error('legtools:UnsupportedMATLABver', ...
-                    'MATLAB releases prior to R2014b are not supported' ...
-                    );
+                    'MATLAB releases prior to R2014b are not supported.')
             end
         end
         
