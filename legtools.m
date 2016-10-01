@@ -1,8 +1,7 @@
 classdef legtools
     %LEGTOOLS A class of methods to modify existing Legend objects.
     %
-    %   This is an HG2 specific implementation and requires MATLAB R2014b
-    %   or newer.
+    %   LEGTOOLS requires MATLAB R2014b or newer.
     %
     %   LEGTOOLS methods:
     %    append   - Add one or more entries to the end of the legend
