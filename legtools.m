@@ -37,13 +37,17 @@ classdef legtools
             %    For example, if you have plotted two lines and the current
             %    legend contains one entry, appending three new entries
             %    will only append the first of them.
+            
             % Check number of input arguments
             narginchk(2,2)
             
+            % Check MATLAB version
             legtools.verchk
+            
+            % Check legend handle
             lh = legtools.handlecheck('append', lh);
             
-            
+            % Check new strings
             newStrings = legtools.strcheck('append', newStrings);
             
             % To make sure we target the right axes, pull the legend's
