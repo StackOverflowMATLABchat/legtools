@@ -198,7 +198,7 @@ classdef legtools
             end
         end
         
-        function [lh] = handlecheck(src, lh)
+        function lh = handlecheck(src, lh)
             % Make sure lh exists and is a legend object
             if ~isgraphics(lh,'legend')
                 msgID = sprintf('legtools:%s:InvalidLegendHandle', src);
@@ -211,7 +211,7 @@ classdef legtools
                 warning(msgID, ...
                     '%u Legend objects specified, modifying the first one only', ...
                     numel(lh) ...
-                    );
+                    )
                 lh = lh(1);
             end
         end
