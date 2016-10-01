@@ -21,17 +21,22 @@ classdef legtools
     
     methods (Static)
         function append(lh, newStrings)
-            % APPEND appends strings, newStrings, to the specified Legend
-            % object, lh. newStrings can be a 1D character array or a 1D
-            % cell array of strings. Character arrays are treated as a
-            % single string. If multiple Legend objects are specified, only
-            % the first will be modified.
+            % APPEND Append entries to legend
             %
-            % The legend will only be updated with the new strings if the
-            % number of strings in the existing legend plus the number of
-            % strings in newStrings is the same as the number of plots on
-            % the associated axes object (e.g. if you have 2 lineseries and
-            % 2 legend entries already no changes will be made).
+            %    LEGTOOLS.APPEND(lh,newStrings) appends strings,
+            %    newStrings, to the specified Legend object, lh. newStrings
+            %    can be a 1D character array or a 1D cell array of strings.
+            %    Character arrays are treated as a single string. If
+            %    multiple Legend objects are specified, only the first will
+            %    be modified.
+            %
+            %    The total number of entries, i.e. the number of current
+            %    entries plus the number of entries in newStrings, must not
+            %    exceed the number of graphics objects in the axes. Any
+            %    extra entries to append will not be added to the legend.
+            %    For example, if you have plotted two lines and the current
+            %    legend contains one entry, appending three new entries
+            %    will only append the first of them.
             legtools.verchk()
             lh = legtools.handlecheck('append', lh);
             
