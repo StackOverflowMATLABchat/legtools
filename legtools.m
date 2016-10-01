@@ -1,17 +1,17 @@
 classdef legtools
-    % LEGTOOLS is a MATLAB class definition providing the user with a set of
-    % methods to modify existing Legend objects.
+    %LEGTOOLS A class of methods to modify existing Legend objects.
     %
-    % This is an HG2 specific implementation and requires MATLAB R2014b or
-    % newer.
+    %   This is an HG2 specific implementation and requires MATLAB R2014b
+    %   or newer.
     %
-    % legtools methods:
-    %      append   - Add one or more entries to the end of the legend
-    %      permute  - Rearrange the legend entries
-    %      remove   - Remove one or more legend entries
-    %      adddummy - Add one or more entries to the legend for unsupported graphics objects
+    %   LEGTOOLS methods:
+    %    append   - Add one or more entries to the end of the legend
+    %    permute  - Rearrange the legend entries
+    %    remove   - Remove one or more legend entries
+    %    adddummy - Add one or more entries to the legend for unsupported
+    %               graphics objects
     %
-    % See also legend
+    %    See also legend
     
     methods
         function obj = legtools
