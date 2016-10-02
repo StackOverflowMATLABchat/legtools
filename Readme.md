@@ -45,7 +45,7 @@ hold on
 fplot(@cos)
 legtools.append(lh, 'cosine')
 ```
-![append1](img/append1.png)
+![append1](../readme/img/append1.png)
 
 #### Adding two legend entries
 ```matlab
@@ -60,7 +60,7 @@ fplot(@cos)
 fplot(@tan)
 legtools.append(lh, {'cosine', 'tangent'})
 ```
-![append2](img/append2.png)
+![append2](../readme/img/append2.png)
 
 <a name="permute"></a>
 ### `legtools.`*`permute`*`(legendhandle, newOrder)`
@@ -86,7 +86,7 @@ lh = legend;
 % Rearrange legend entries!
 legtools.permute(lh, [3, 1, 2])
 ```
-![permute](img/permute.png)
+![permute](../readme/img/permute.png)
 
 <a name="remove"></a>
 ### `legtools.`*`remove`*`(legendhandle, removeidx)`
@@ -113,7 +113,7 @@ lh = legend;
 % Remove entries one and three!
 legtools.remove(lh, [3, 1])
 ```
-![remove](img/remove.png)
+![remove](../readme/img/remove.png)
 
 <a name="adddummy"></a>
 ### `legtools.`*`adddummy`*`(legendhandle, newStrings, plotParams)`
@@ -168,7 +168,7 @@ annotation('rectangle', dim, 'Color', 'red')
 % Add a legend entry for the box!
 legtools.adddummy(lh, 'rectangle', 'Color', 'red')
 ```
-![addummy](img/adddummy1.png)
+![addummy](../readme/img/adddummy1.png)
 
 ##### Add dummy legend entries for multiple annotations
 ```matlab
@@ -187,4 +187,4 @@ newStrings = {'rectangle', 'ellipse'};
 plotParams = {{'Color', 'red'}, {'g'}};
 legtools.adddummy(lh, newStrings, plotParams)
 ```
-![addummy2](img/adddummy2.png)
+![addummy2](../readme/img/adddummy2.png)
