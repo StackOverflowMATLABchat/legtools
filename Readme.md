@@ -1,4 +1,4 @@
-[![MATLAB FEX](https://img.shields.io/badge/MATLAB%20FEX-legtools-brightgreen.svg)](http://www.mathworks.com/matlabcentral/fileexchange/57241-hg2-legend-tools) ![Minimum Version](https://img.shields.io/badge/Requires-R2014b%20%28v8.4%29-orange.svg) ![R2016b support](https://img.shields.io/badge/supports-R2016b%20(v9.1)-brightgreen.svg)
+[![MATLAB FEX](https://img.shields.io/badge/MATLAB%20FEX-legtools-brightgreen.svg)](http://www.mathworks.com/matlabcentral/fileexchange/57241-hg2-legend-tools) ![Minimum Version](https://img.shields.io/badge/requires-R2014b%20(v8.4)-orange.svg) ![R2016b support](https://img.shields.io/badge/supports-R2016b%20(v9.1)-brightgreen.svg)
 
 # LEGTOOLS
 `legtools` is a MATLAB class definition providing the user with a set of methods to modify existing Legend objects.
