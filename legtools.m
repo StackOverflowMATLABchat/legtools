@@ -4,7 +4,7 @@ classdef legtools
     %   LEGTOOLS requires MATLAB R2014b or newer.
     %
     %   LEGTOOLS methods:
-    %    append   - Add one or more entries to the end of the legend
+    %    append   - Append entries to legend
     %    permute  - Rearrange the legend entries
     %    remove   - Remove one or more legend entries
     %    adddummy - Add one or more entries to the legend for unsupported
@@ -23,20 +23,21 @@ classdef legtools
         function append(lh, newStrings)
             %LEGTOOLS.APPEND Append entries to legend
             %
-            %    LEGTOOLS.APPEND(lh,newStrings) appends strings,
-            %    newStrings, to the specified Legend object, lh. newStrings
-            %    can be a 1D character array or a 1D cell array of strings.
-            %    Character arrays are treated as a single string. If
-            %    multiple Legend objects are specified, only the first will
-            %    be modified.
+            %    LEGTOOLS.APPEND(lh,newStrings) appends strings specified
+            %    by newStrings to the Legend object specified by lh.
+            %    newStrings can be a 1D character array or a 1D cell array
+            %    of strings. Character arrays are treated as a single
+            %    string. From MATLAB R2016b onwards the string data type is
+            %    also supported. If multiple Legend objects are specified
+            %    in lh, only the first will be modified.
             %
             %    The total number of entries, i.e. the number of current
-            %    entries plus the number of entries in newStrings, must not
-            %    exceed the number of graphics objects in the axes. Any
-            %    extra entries to append will not be added to the legend.
-            %    For example, if you have plotted two lines and the current
-            %    legend contains one entry, appending three new entries
-            %    will only append the first of them.
+            %    entries in the legend plus the number of entries in
+            %    newStrings, can exceed the number of graphics objects in
+            %    the axes. However, any extra entries to append will not be
+            %    added to the legend. For example, if you have plotted two
+            %    lines and the current legend contains one entry, appending
+            %    three new entries will only append the first of them.
             
             % Check number of input arguments
             narginchk(2,2)
