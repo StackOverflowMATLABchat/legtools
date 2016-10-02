@@ -196,7 +196,7 @@ classdef legtools
             % legend entry is removed.
             
             % Check number of input arguments
-            narginchk(3,3)
+            narginchk(2,3)
             
             % Check MATLAB version
             legtools.verchk
@@ -206,6 +206,11 @@ classdef legtools
             
             % Check new strings
             newStrings = legtools.strcheck('adddummy', newStrings);
+            
+            % Check plot parameters
+            if nargin<3
+                plotParams = {{}};
+            end
             
             % See if we have a character input for the single addition case
             % and put it into a cell
