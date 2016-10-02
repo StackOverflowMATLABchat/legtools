@@ -190,7 +190,7 @@ classdef legtools
             %   creation of the dummy legend entries.
             %
             %   The plotParams input argument can have multiple formats.
-            %   All format are based on the LineSpec and Name-Value pair
+            %   All formats are based on the LineSpec and Name-Value pair
             %   arguments syntax of the built-in plot function. plotParams
             %   can be in the following formats (with example parameters):
             %    - absent (like in the first syntax)
