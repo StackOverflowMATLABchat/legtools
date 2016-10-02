@@ -1,157 +1,181 @@
 [![MATLAB FEX](https://img.shields.io/badge/MATLAB%20FEX-legtools-brightgreen.svg)](http://www.mathworks.com/matlabcentral/fileexchange/57241-hg2-legend-tools) ![R2016b support](https://img.shields.io/badge/supports-R2016b%20(v9.1)-brightgreen.svg) ![Minimum Version](https://img.shields.io/badge/requires-R2014b%20(v8.4)-orange.svg)
 
-# LEGTOOLS
-`legtools` is a MATLAB class definition providing the user with a set of methods to modify existing Legend objects.
+# `legtools`
+`legtools` is a MATLAB class of methods to modify existing Legend objects.
 
-This is an HG2 specific implementation and requires MATLAB R2014b or newer.
+`legtools` requires MATLAB R2014b or newer.
 
 ## Methods
 Name | Description
 ----------|--------------
-[`append`](#append) | Add one or more entries to the end of the legend  
-[`permute`](#permute) | Rearrange the legend entries  
-[`remove`](#remove) | Remove one or more legend entries
-[`adddummy`](#adddummy) | Add legend entries for one or more unsupported graphics objects
+[`append`](#append) | Append entries to legend
+[`permute`](#permute) | Rearrange legend entries  
+[`remove`](#remove) | Remove entries from legend
+[`adddummy`](#adddummy) | Add dummy entries to legend
 
 <a name="append"></a>
-### *legtools*.**append**(*legendhandle*, *newStrings*)
-#### Description
-Append string(s), `newStrings`, to the specified `Legend` object, `legendhandle`. `newStrings` can be a 1D character array or a 1D cell array of strings. Character arrays are treated as a single string. If multiple `Legend` objects are specified, only the first will be modified.
+### `legtools.`*`append`*`(lh, newStrings)`
+#### Syntax
+`legtools.append(lh, newStrings)` appends strings specified
+by `newStrings` to the Legend object specified by `lh`.
+`newStrings` can be a 1D character array or a 1D cell array
+of strings. Character arrays are treated as a single
+string. From MATLAB R2016b onwards the string data type is
+also supported. If multiple `Legend` objects are specified
+in `lh`, only the first will be modified.
 
-The legend will only be updated with the new strings if the number of strings in the existing legend plus the number of strings in `newStrings` is the same as the number of plots on the associated `Axes` object (e.g. if you have 2 lineseries and 2 legend entries already no changes will be made).
+The total number of entries, i.e. the number of current
+entries in the legend plus the number of entries in
+`newStrings`, can exceed the number of graphics objects in
+the axes. However, any extra entries to append will not be
+added to the legend. For example, if you have plotted two
+lines and the current legend contains one entry, appending
+three new entries will only append the first of them.
 
 #### Examples
-##### Adding one legend entry
+##### Append one legend entry
 ```matlab
-% Sample data
-x = 1:10;
-y1 = x;
-y2 = x + 1;
-
-% Plot a thing!
+% Plot a sine!
 figure
-plot(x, y1, 'ro');
-lh = legend('Circle', 'Location', 'NorthWest');
+fplot(@sin)
+lh = legend('sine');
 
-% Add a thing!
+% Append to axes and legend!
 hold on
-plot(x, y2, 'bs');
-legtools.append(lh, 'Square')
+fplot(@cos)
+legtools.append(lh, 'cosine')
 ```
-
-![append1](https://github.com/sco1/sco1.github.io/blob/master/legtools/append1.png)
+![append1](img/append1.png)
 
 #### Adding two legend entries
 ```matlab
-% Sample data
-x = 1:10;
-y1 = x;
-y2 = x + 1;
-y3 = x + 2;
-
-% Plot a thing!
+% Plot a sine!
 figure
-plot(x, y1, 'ro');
-lh = legend('Circle', 'Location', 'NorthWest');
+fplot(@sin)
+lh = legend('sine');
 
 % Add two things!
 hold on
-plot(x, y2, 'bs', x, y3, 'g+');
-legtools.append(lh, {'Square', 'Plus'})
+fplot(@cos)
+fplot(@tan)
+legtools.append(lh, {'cosine', 'tangent'})
 ```
-
-![append2](https://github.com/sco1/sco1.github.io/blob/master/legtools/append2.png)
+![append2](img/append2.png)
 
 <a name="permute"></a>
-### *legtools*.**permute**(*legendhandle*, *newOrder*)
-#### Description
-Rearrange the entries of the specified `Legend` object, `legendhandle`, so they are in the order specified by the vector `newOrder`. `newOrder` must be the same length as the number of legend entries in `legendhandle`. All elements of order must be unique, real, positive, integer values.
+### `legtools.`*`permute`*`(legendhandle, newOrder)`
+#### Syntax
+`legtools.permute(lh, order)` rarranges the entries of the
+Legend object specified by `lh` in the order specified by
+`order`. `order` must be a vector with the same number of
+elements as the number of entries in the specified legend.
+All elements in order must be unique, real and positive
+integers.
 
 #### Example
 ```matlab
-% Sample data
-x = 1:10;
-y1 = x;
-y2 = x + 1;
-y3 = x + 2;
-
 % Plot a thing!
 figure
-plot(x, y1, 'ro', x, y2, 'bs', x, y3, 'g+');
-lh = legend({'One', 'Two', 'Three'}, 'Location', 'NorthWest');
-legtools.permute(lh, [3, 1, 2]);
-```
+fplot(@sin)
+hold on
+fplot(@cos)
+fplot(@tan)
+legend sine cosine tangent
+lh = legend;
 
-![permute](https://github.com/sco1/sco1.github.io/blob/master/legtools/permute.png)
+% Rearrange legend entries!
+legtools.permute(lh, [3, 1, 2])
+```
+![permute](img/permute.png)
 
 <a name="remove"></a>
-### *legtools*.**remove**(*legendhandle*, *removeidx*)
-#### Description            
-Remove the legend entries of the `Legend` object, `legendhandle`, at the locations specified by `removeidx`. All elements of `removeidx` must be real, positive, integer values.
+### `legtools.`*`remove`*`(legendhandle, removeidx)`
+#### Syntax            
+`legtools.remove(lhm, remidx)` removes the legend entries from
+the legend specified in `lh` at the locations specified by
+`remidx`. All elements of `remidx` must be real and positive
+integers.
 
-If `removeidx` specifies all the legend entries the `Legend` object, `legendhandle`, is deleted.
-
-If a legend entry to be removed is one generated by `legtools.adddummy`, its corresponding Chart Line Object will also be deleted.
+If `remidx` specifies all the legend entries, the legend
+object is deleted.
 
 #### Example
 ```matlab
-% Sample data
-x = 1:10;
-y1 = x;
-y2 = x + 1;
-y3 = x + 2;
-
 % Plot a thing!
 figure
-plot(x, y1, 'ro', x, y2, 'bs', x, y3, 'g+');
-lh = legend({'One', 'Two', 'Three'}, 'Location', 'NorthWest');
+fplot(@sin)
+hold on
+fplot(@cos)
+fplot(@tan)
+legend sine cosine tangent
+lh = legend;
 
-legtools.remove(lh, [3, 1]);
+% Remove entries one and three!
+legtools.remove(lh, [3, 1])
 ```
 
-![remove](https://github.com/sco1/sco1.github.io/blob/master/legtools/remove.png)
+![remove](img/remove.png)
 
 <a name="adddummy"></a>
-### *legtools*.**addummy**(*legendhandle*, *newStrings*, *plotParams*)
-#### Description
-`adddummy` appends strings, `newStrings`, to the Legend Object, `lh`, for graphics objects that are not supported by `legend`.
+### `legtools.`*`addummy`*`(legendhandle, newStrings, plotParams)`
+#### Syntax
+`legtools.adddummy(lh, newStrings)` appends strings, specified
+by `newStrings`, to the Legend object, specified by `lh`, for
+graphics objects that are not supported by legend. The
+default line specification for a plot is used for the dummy
+entries in the legend, i.e. a line.
 
-For a single dummy legend entry, `plotParams` is defined as a cell array of strings that follow MATLAB's `plot` syntax. Entries can be either a `LineSpec` or a series of Name/Value pairs. For multiple dummy legend entries, `plotParams` is  defined as a cell array of cells where each top-level cell corresponds to a string in `newStrings`.
+`legtools.adddummy(lh, newStrings, plotParams)` additionally
+uses plot parameters specified in `plotParams` for the
+creation of the dummy legend entries.
 
-`adddummy` adds a Chart Line Object to the parent axes of `lh` consisting of a single `NaN` value. Nothing is rendered in the axes but it provides a valid object for `legend` to include. `legtools.remove` will remove this Chart Line Object if its legend entry is removed.
+The `plotParams` input argument can have multiple formats.
+All formats are based on the LineSpec and Name-Value pair
+arguments syntax of the built-in [`plot`](https://mathworks.com/help/matlab/ref/plot.html) function. `plotParams`
+can be in the following formats (with example parameters):
+- absent (like in the first syntax)
+- empty, e.g. `''`, `[]` or `{}`
+- one set of plot parameters for all dummy entries, e.g.:
+ - `legtools.adddummy(lh, newStrings, ':', 'Color' ,'red')`. This is the regular `plot` syntax.
+ - `legtools.adddummy(lh, newStrings, {'Color','red'})`. This is one set of plot parameters in a cell.
+- two or more sets of plot parameters, e.g.:
+ - `legtools.adddummy(lh, newStrings, {'k'}, {'--b'})`. These are two sets of plot parameters, each in a cell.
+ - `legtools.adddummy(lh, newStrings, {{'r'}, {':m'}})`. These are two sets of plot parameters, each in a cell in a cell.
 
+For more than two dummies, the previous syntaxes can be
+extended with additional sets of plot parameters.
+
+`legtools.adddummy` adds an invisible point to the parent
+axes of the legend. More specifically, it adds a `Line`
+object to the parent axes of `lh` consisting of a single `NaN`
+value so nothing is visibly changed in the axes while
+providing a valid object to include in the legend.
+
+`legtools.remove` deletes dummy `Line` objects when their
+corresponding legend entries are removed.
 
 #### Examples
-##### Add legend entry for single annotation
+##### Add dummy legend entry for single annotation
 ```matlab
-% Sample data
-x = 1:10;
-y1 = x;
-
 % Plot a thing!
 figure
-plot(x, y1);
-lh = legend('My Data', 'Location', 'NorthWest');
+fplot(@sin)
+lh = legend('sin');
 
 % Add a box!
 dim = [0.4 0.4 0.2 0.2];
 annotation('rectangle', dim, 'Color', 'red')
 
 % Add a legend entry for the box!
-legtools.adddummy(lh, 'A Red Rectangle', {'Color', 'red'})
+legtools.adddummy(lh, 'rectangle', 'Color', 'red')
 ```
+![addummy](img/adddummy1.png)
 
-![addummy](https://github.com/sco1/sco1.github.io/blob/master/legtools/adddummy.png)
-
-##### Add legend entries for multiple annotations
+##### Add dummy legend entries for multiple annotations
 ```matlab
-% Sample data
-x = 1:10;
-y = x;
-
 % Plot a thing!
-plot(x, y);
-lh = legend('My Data', 'Location', 'NorthWest');
+fplot(@sin)
+lh = legend('sine');
 
 % Add a box and a circle!
 dim1 = [0.5 0.6 0.2 0.2];
@@ -160,9 +184,8 @@ dim2 = [0.3 0.4 0.2 0.2];
 annotation('ellipse', dim2, 'Color', 'green')
 
 % Add legend entries!
-newStrings = {'A Red Rectangle', 'A Green Ellipse'};
-plotParams = {{'Color', 'Red'}, {'Color', 'green'}};
+newStrings = {'rectangle', 'ellipse'};
+plotParams = {{'Color', 'red'}, {'g'}};
 legtools.adddummy(lh, newStrings, plotParams)
 ```
-
-![addummy2](https://github.com/sco1/sco1.github.io/blob/master/legtools/adddummy2.png)
+![addummy2](img/adddummy2.png)
