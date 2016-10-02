@@ -7,8 +7,7 @@ classdef legtools
     %    append   - Append entries to legend
     %    permute  - Rearrange legend entries
     %    remove   - Remove entries from legend
-    %    adddummy - Add one or more entries to the legend for unsupported
-    %               graphics objects
+    %    adddummy - Add dummy entries to legend
     %
     %    See also legend
     
@@ -177,23 +176,47 @@ classdef legtools
             end
         end % of remove method
         
-        function adddummy(lh, newStrings, plotParams)
-            % ADDDUMMY appends strings, newStrings, to the Legend Object,
-            % lh, for graphics objects that are not supported by legend.
+        function adddummy(lh, newStrings, varargin)
+            %LEGTOOLS.ADDDUMMY Add dummy entries to legend
             %
-            % For a single dummy legend entry, plotParams is defined as a
-            % cell array of strings that follow MATLAB's PLOT syntax.
-            % Entries can be either a LineSpec or a series of Name/Value
-            % pairs. For multiple dummy legend entries, plotParams is
-            % defined as a cell array of cells where each top-level cell
-            % corresponds to a string in newStrings.
+            %   LEGTOOLS.ADDDUMMY(lh,newStrings) appends strings, specified
+            %   by newStrings, to the Legend object, specified by lh, for
+            %   graphics objects that are not supported by legend. The
+            %   default line specification for a plot is used for the dummy
+            %   entries in the legend, i.e. a line.
             %
-            % ADDDUMMY adds a Chart Line Object to the parent axes of lh
-            % consisting of a single NaN value so nothing is rendered in
-            % the axes but it provides a valid object for legend to include
+            %   LEGTOOLS.ADDDUMMY(lh,newStrings,plotParams) additionally
+            %   uses plot parameters specified in plotParams for the
+            %   creation of the dummy legend entries.
             %
-            % LEGTOOLS.REMOVE will remove this Chart Line Object if its
-            % legend entry is removed.
+            %   The plotParams input argument can have multiple formats.
+            %   All format are based on the LineSpec and Name-Value pair
+            %   arguments syntax of the built-in plot function. plotParams
+            %   can be in the following formats (with example parameters):
+            %    - absent (like in the first syntax)
+            %    - empty, e.g. '', [] or {}
+            %    - one set of plot parameters for all dummy entries, e.g.:
+            %      - LEGTOOLS.ADDDUMMY(lh, newStrings, ':', 'Color' ,'red')
+            %        This is the regular plot syntax.
+            %      - LEGTOOLS.ADDDUMMY(lh, newStrings, {'Color','red'})
+            %        This is one set of plot parameters in a cell.
+            %    - two or more sets of plot parameters, e.g.:
+            %      - LEGTOOLS.ADDDUMMY(lh, newStrings, {'k'}, {'--b'})
+            %        These are two sets of plot parameters, each in a cell.
+            %      - LEGTOOLS.ADDDUMMY(lh, newStrings, {{'r'}, {':m'}})
+            %        These are two sets of plot parameters, each in a cell
+            %        in a cell.
+            %   For more than two dummies, the previous syntaxes can be
+            %   extended with additional sets of plot parameters.
+            %
+            %   LEGTOOLS.ADDDUMMY adds an invisible point to the parent
+            %   axes of the legend. More specifically, it adds a Line
+            %   object to the parent axes of lh consisting of a single NaN
+            %   value so nothing is visibly changed in the axes while
+            %   providing a valid object to include in the legend.
+            %
+            %   LEGTOOLS.REMOVE deletes dummy Line objects when their
+            %   corresponding legend entries are removed.
             
             % Check number of input arguments
             narginchk(2,inf)
