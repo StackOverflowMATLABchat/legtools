@@ -5,7 +5,7 @@ classdef legtools
     %
     %   LEGTOOLS methods:
     %    append   - Append entries to legend
-    %    permute  - Rearrange the legend entries
+    %    permute  - Rearrange legend entries
     %    remove   - Remove one or more legend entries
     %    adddummy - Add one or more entries to the legend for unsupported
     %               graphics objects
@@ -65,12 +65,14 @@ classdef legtools
         end % of append method
         
         function permute(lh, order)
-            % PERMUTE rearranges the entries of the specified Legend
-            % object, lh, so they are then the order specified by the
-            % vector order. order must be the same length as the number of
-            % legend entries in lh. All elements of order must be unique,
-            % real, positive, integer values.
-            legtools.verchk
+            %LEGTOOLS.PERMUTE Rearrange legend entries
+            %
+            %   LEGTOOLS.PERMUTE(lh,order) rarranges the entries of the
+            %   Legend object specified by lh in the order specified by
+            %   order. order must be a vector with the same number of
+            %   elements as the number of entries in the specified legend.
+            %   All elements in order must be unique, real and positive
+            %   integers.
             
             % TODO: Add check for presence of order
             
