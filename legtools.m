@@ -196,7 +196,7 @@ classdef legtools
             % legend entry is removed.
             
             % Check number of input arguments
-            narginchk(2,3)
+            narginchk(2,inf)
             
             % Check MATLAB version
             legtools.verchk
@@ -206,26 +206,11 @@ classdef legtools
             
             % Check new strings
             newStrings = legtools.strcheck('adddummy', newStrings);
+            nnew = numel(newStrings);
             
-            % Check plot parameters
-            if nargin<3
-                plotParams = {{}};
-            end
+            % Check and set plot parameters
+            plotParams = legtools.checkPlotParams(varargin,nnew);
             
-            % In the single addition case, the input may or may not be a
-            % cell of cells. Check for the various cases. In these checks
-            % it is assumed plotParams is a cell if it is not a characater
-            % array
-            if ischar(plotParams)
-                % Single addition case, plotParams is a character array
-                plotParams = {plotParams};
-            end
-            if ~isa(plotParams{1},'cell')
-                plotParams = {plotParams};
-            end
-            % Now plotParams is a cell of cells
-            
-            % TODO: More plotParams error checking
             
             parentaxes = lh.PlotChildren(1).Parent;
             
@@ -237,7 +222,7 @@ classdef legtools
                 hold(parentaxes, 'on');
             end
             
-            for ii = 1:length(newStrings)
+            for ii = 1:nnew
                 plot(parentaxes, NaN, ...
                     plotParams{ii}{:}, ... % Leave validation up to plot
                     'UserData', 'legtools.dummy')
@@ -323,5 +308,89 @@ classdef legtools
             % Check shape of newStrings and make sure it's 1D
             newString = newString(:)';
         end % of strcheck method
+        
+        function plotParams = checkPlotParams(plotParams,nnew)
+            % Check plot parameter set format in plotParams, can be:
+            % - empty ({}, [], '', etc.)
+            % - one set
+            %  - in plot syntax
+            %  - in a cell
+            % - two or more sets
+            %  - in one cell
+            %  - in two or more cells
+            
+            if nnew>1
+                if isempty(plotParams)
+                    % plotParams is an empty set of plot parameters for all new
+                    % dummy entries
+                    plotParams = repmat({{}},1,nnew);
+                else
+                    % plotParams is not empty, check for one or more sets
+                    if numel(plotParams)==1
+                        % check if cell or string
+                        if iscellstr(plotParams)
+                            % plotParams is one set in string format,
+                            % repeat nnew times in cell format
+                            plotParams = repmat({plotParams},1,nnew);
+                        elseif iscellstr(plotParams{1}(1))
+                            % plotParams is one set in cell format, repeat
+                            % nnew times as is
+                            plotParams = repmat(plotParams,1,nnew);
+                        else
+                            % plotParams contains one or more sets in cell
+                            % format
+                            if numel(plotParams{1})==1
+                                % plotParams contains one set, repeat nnew
+                                % times
+                                plotParams = repmat(plotParams{1},1,nnew);
+                            else
+                                % plotParams contains multiple sets in
+                                % cells, uncell them
+                                plotParams = plotParams{:};
+                                assert( ...
+                                    numel(plotParams) == nnew, ...
+                                    'legtools:adddummy:TooManyPlotParamSets', ...
+                                    'Too many plot parameter sets specified.' ...
+                                    )
+                            end
+                        end
+                    else
+                        % plotParams may be one set of plot parameters in a
+                        % cell array, or more than one set, each in a cell
+                        if iscellstr(plotParams(1))
+                            % plotParams is one set, repeat nnew times
+                            plotParams = repmat({plotParams},1,nnew);
+                        else
+                            % plotParams contains more than one set in
+                            % cells, so do nothing, but assert the number
+                            % is correct
+                            assert( ...
+                                numel(plotParams) == nnew, ...
+                                'legtools:adddummy:TooManyPlotParamSets', ...
+                                'Too many plot parameter sets specified.' ...
+                                )
+                        end
+                    end
+                end
+            else
+                % In the single addition case, the input may be a cell of
+                % strings
+                if iscellstr(plotParams)
+                    % Single addition case, plotParams contains a character
+                    % array
+                    plotParams = {plotParams};
+                end
+                
+                % Make sure plotParams is in cell format if it is empty
+                if isempty(plotParams{1})
+                    plotParams = {{}};
+                end
+                
+                % Make sure plotParams is a cell of cells
+                if ~iscell(plotParams{1})
+                    plotParams = {plotParams};
+                end
+            end
+        end % of checkPlotParams method
     end % of Static, Access = private methods
 end
