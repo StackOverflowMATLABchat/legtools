@@ -204,13 +204,21 @@ classdef legtools
             % TODO: More plotParams error checking
             
             parentaxes = lh.PlotChildren(1).Parent;
-            hold(parentaxes, 'on');
+            
+            % Hold parent axes
+            if ishold(parentaxes)
+                washold = true;
+            else
+                washold = false;
+                hold(parentaxes, 'on');
+            end
+            
             for ii = 1:length(newStrings)
                 plot(parentaxes, NaN, ...
                     plotParams{ii}{:}, ... % Leave validation up to plot
                     'UserData', 'legtools.dummy')
             end
-            hold(parentaxes, 'off');
+            if ~washold, hold(parentaxes, 'off'); end
             
             legtools.append(lh, newStrings);  % Add legend entries
         end % of adddummy method
