@@ -116,8 +116,13 @@ classdef legtools
             %   If remidx specifies all the legend entries, the legend
             %   object is deleted.
             
+            % Check number of input arguments
             narginchk(2,2)
+            
+            % Check MATLAB version
             legtools.verchk
+            
+            % Check legend handle
             lh = legtools.handlecheck('remove', lh);
             
             % Catch length issues, let MATLAB deal with the rest
