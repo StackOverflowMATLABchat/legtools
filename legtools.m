@@ -74,7 +74,8 @@ classdef legtools
             %   All elements in order must be unique, real and positive
             %   integers.
             
-            % TODO: Add check for presence of order
+            % Check number of input arguments
+            narginchk(2,2)
             
             lh = legtools.handlecheck('permute', lh);
             
