@@ -77,10 +77,14 @@ classdef legtools
             % Check number of input arguments
             narginchk(2,2)
             
+            % Check MATLAB version
+            legtools.verchk
+            
+            % Check legend handle
             lh = legtools.handlecheck('permute', lh);
             
             % Catch length & uniqueness issues with order, let MATLAB deal
-            % with the rest.
+            % with the rest
             if numel(order) ~= numel(lh.String)
                 error('legtools:permute:TooManyIndices', ...
                     'Number of values in order must match the number of legend strings' ...
