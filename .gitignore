@@ -17,6 +17,3 @@ slprj/
 
 # MATLAB App Files
 *.mlapp
-
-# MATLAB figure files
-*.fig
