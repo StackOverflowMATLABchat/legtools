@@ -106,12 +106,16 @@ classdef legtools
         end % of permute method
         
         function remove(lh, remidx)
-            % REMOVE removes the legend entries of the legend object, lh,
-            % at the locations specified by remidx. All elements of remidx
-            % must be real, positive, integer values.
+            %LEGTOOLS.REMOVE Remove entries from legend
             %
-            % If remidx specifies all the legend entries, the legend
-            % object is deleted
+            %   LEGTOOLS.REMOVE(lhm,remidx) removes the legend entries from
+            %   the legend specified in lh at the locations specified by
+            %   remidx. All elements of remidx must be real and positive
+            %   integers.
+            %
+            %   If remidx specifies all the legend entries, the legend
+            %   object is deleted.
+            
             legtools.verchk
             lh = legtools.handlecheck('remove', lh);
             
