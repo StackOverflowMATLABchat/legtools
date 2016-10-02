@@ -234,6 +234,10 @@ classdef legtools
             % Check and set plot parameters
             plotParams = legtools.checkPlotParams(varargin,nnew);
             
+            % TODO: add callback for when a dummy's legend entry is no
+            % longer in the current legend object, i.e. the corresponding
+            % lh.Strings entry is removed. This can happen when the user
+            % reset a legend with a new legend(__) command.
             
             parentaxes = lh.PlotChildren(1).Parent;
             
@@ -250,6 +254,8 @@ classdef legtools
                     plotParams{ii}{:}, ... % Leave validation up to plot
                     'UserData', 'legtools.dummy')
             end
+            
+            % Restore previous hold state
             if ~washold, hold(parentaxes, 'off'); end
             
             % Append dummy entries to legend
