@@ -1,4 +1,4 @@
-[![MATLAB FEX](https://img.shields.io/badge/MATLAB%20FEX-legtools-brightgreen.svg)](http://www.mathworks.com/matlabcentral/fileexchange/57241-hg2-legend-tools) ![Minimum Version](https://img.shields.io/badge/Requires-R2014b%20%28v8.4%29-orange.svg)
+[![MATLAB FEX](https://img.shields.io/badge/MATLAB%20FEX-legtools-brightgreen.svg)](http://www.mathworks.com/matlabcentral/fileexchange/57241-hg2-legend-tools) ![R2016b support](https://img.shields.io/badge/supports-R2016b%20(v9.1)-brightgreen.svg) ![Minimum Version](https://img.shields.io/badge/requires-R2014b%20(v8.4)-orange.svg)
 
 # LEGTOOLS
 `legtools` is a MATLAB class definition providing the user with a set of methods to modify existing Legend objects.
@@ -6,10 +6,12 @@
 This is an HG2 specific implementation and requires MATLAB R2014b or newer.
 
 ## Methods
-* [`append`](#append)  - Add one or more entries to the end of the legend  
-* [`permute`](#permute) - Rearrange the legend entries  
-* [`remove`](#remove)  - Remove one or more legend entries
-* [`adddummy`](#adddummy) - Add legend entries for one or more unsupported graphics objects
+Name | Description
+----------|--------------
+[`append`](#append) | Add one or more entries to the end of the legend  
+[`permute`](#permute) | Rearrange the legend entries  
+[`remove`](#remove) | Remove one or more legend entries
+[`adddummy`](#adddummy) | Add legend entries for one or more unsupported graphics objects
 
 <a name="append"></a>
 ### *legtools*.**append**(*legendhandle*, *newStrings*)
