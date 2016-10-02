@@ -212,11 +212,18 @@ classdef legtools
                 plotParams = {{}};
             end
             
-            % See if we have a character input for the single addition case
-            % and put it into a cell
+            % In the single addition case, the input may or may not be a
+            % cell of cells. Check for the various cases. In these checks
+            % it is assumed plotParams is a cell if it is not a characater
+            % array
             if ischar(plotParams)
-                plotParams = {{plotParams}};
+                % Single addition case, plotParams is a character array
+                plotParams = {plotParams};
             end
+            if ~isa(plotParams{1},'cell')
+                plotParams = {plotParams};
+            end
+            % Now plotParams is a cell of cells
             
             % TODO: More plotParams error checking
             
