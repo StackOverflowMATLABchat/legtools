@@ -139,11 +139,9 @@ classdef legtools
                 'Index in remidx exceeds number of legend entries.' ...
                 )
             
+            % Remove specified legend entries
             if numel(unique(remidx)) == numel(lh.String)
-                delete(lh);
-                warning('legtools:remove:LegendDeleted', ...
-                    'All legend entries specified for removal, deleting Legend Object' ...
-                    );
+                delete(lh)
             else
                 % Check legend entries to be removed for dummy lineseries
                 % objects and delete them
