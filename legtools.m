@@ -53,15 +53,27 @@ classdef legtools
             
             % To make sure we target the right axes, pull the legend's
             % PlotChildren and get their parent axes object
-            parentaxes = lh.PlotChildren(1).Parent;
+            ax = lh.PlotChildren(1).Parent;
             
-            % Get line object handles
-            plothandles = flipud(parentaxes.Children); % Flip so order matches
+            % Get graphics object handles
+            axchildren = flip(ax.Children); % Flip so order matches
+            legchildren = lh.PlotChildren;
             
-            % Update legend with line object handles & new string array
-            newlegendstr = [lh.String newStrings]; % Need to generate this before adding new plot objects
-            lh.PlotChildren = plothandles;
-            lh.String = newlegendstr;
+            % Sort the children of the future legend object in an order
+            % depending on current legend PlotChildren property, because
+            % this may not be in the same order as axchildren, e.g. after
+            % permuting the legend entries
+            [~,~,icurrent] = intersect(legchildren,axchildren,'stable');
+            [~,idiff] = setdiff(axchildren,legchildren,'stable');
+            ifuture = [icurrent;idiff];
+            axchildren = axchildren(ifuture);
+            
+            % Strings desired order for future legend
+            newstr = [lh.String, newStrings];
+            
+            % Update legend with graphics object handles & new string array
+            lh.PlotChildren = axchildren;
+            lh.String = newstr;
         end % of append method
         
         function permute(lh, order)
