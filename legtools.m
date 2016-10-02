@@ -143,23 +143,25 @@ classdef legtools
             if numel(unique(remidx)) == numel(lh.String)
                 delete(lh)
             else
-                % Check legend entries to be removed for dummy lineseries
+                % Check legend entries to be removed for dummy graphics
                 % objects and delete them
-                count = 1;
-                for ii = remidx
-                    % Our dummy lineseries contain a single NaN YData entry
-                    if length(lh.PlotChildren(ii).YData) == 1 && isnan(lh.PlotChildren(ii).YData)
+                lc = lh.PlotChildren;
+                obj2delete = gobjects(numel(remidx));
+                for ii = numel(remidx):-1:1
+                    ir = remidx(ii);
+                    % Our dummy lineseries have the UserData property set
+                    % to 'legtools.dummy'
+                    if strcmp(lc(ir).UserData,'legtools.dummy')
                         % Deleting the graphics object here also deletes it
                         % from the legend, which screws up the one-liner
                         % plot children removal. Instead store the objects
                         % to be deleted and delete them after the legend is
                         % properly modified
-                        objtodelete(count) = lh.PlotChildren(ii);
-                        count = count + 1;
+                        obj2delete(ii) = lc(ir);
                     end
                 end
                 lh.PlotChildren(remidx) = [];
-                delete(objtodelete);
+                delete(obj2delete);
             end
         end % of remove method
         
@@ -204,7 +206,9 @@ classdef legtools
             parentaxes = lh.PlotChildren(1).Parent;
             hold(parentaxes, 'on');
             for ii = 1:length(newStrings)
-                plot(parentaxes, NaN, plotParams{ii}{:});  % Leave input validation up to plot
+                plot(parentaxes, NaN, ...
+                    plotParams{ii}{:}, ... % Leave validation up to plot
+                    'UserData', 'legtools.dummy')
             end
             hold(parentaxes, 'off');
             
