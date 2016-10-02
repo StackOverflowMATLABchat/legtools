@@ -220,7 +220,8 @@ classdef legtools
             end
             if ~washold, hold(parentaxes, 'off'); end
             
-            legtools.append(lh, newStrings);  % Add legend entries
+            % Append dummy entries to legend
+            legtools.append(lh, newStrings);
         end % of adddummy method
     end % of Static methods
     
