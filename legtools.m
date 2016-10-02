@@ -6,7 +6,7 @@ classdef legtools
     %   LEGTOOLS methods:
     %    append   - Append entries to legend
     %    permute  - Rearrange legend entries
-    %    remove   - Remove one or more legend entries
+    %    remove   - Remove entries from legend
     %    adddummy - Add one or more entries to the legend for unsupported
     %               graphics objects
     %
