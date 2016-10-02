@@ -116,6 +116,7 @@ classdef legtools
             %   If remidx specifies all the legend entries, the legend
             %   object is deleted.
             
+            narginchk(2,2)
             legtools.verchk
             lh = legtools.handlecheck('remove', lh);
             
