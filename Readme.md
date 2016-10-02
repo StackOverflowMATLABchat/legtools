@@ -113,11 +113,10 @@ lh = legend;
 % Remove entries one and three!
 legtools.remove(lh, [3, 1])
 ```
-
 ![remove](img/remove.png)
 
 <a name="adddummy"></a>
-### `legtools.`*`addummy`*`(legendhandle, newStrings, plotParams)`
+### `legtools.`*`adddummy`*`(legendhandle, newStrings, plotParams)`
 #### Syntax
 `legtools.adddummy(lh, newStrings)` appends strings, specified
 by `newStrings`, to the Legend object, specified by `lh`, for
