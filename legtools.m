@@ -54,7 +54,24 @@ classdef legtools
             
             % Update legend with line object handles & new string array
             newlegendstr = [lh.String newStrings];  % Need to generate this before adding new plot objects
-            lh.PlotChildren = plothandles;
+            
+            % Use the union of the parent axes' Children and the legend
+            % handle's PlotChildren to properly order the legend strings.
+            % Union(A, B, 'Sorted') will return A concatenated with the
+            % values of B not in A, so we have the handles associated with
+            % the existing entries and then the remaining handles in the
+            % order they are plotted.
+            lh.PlotChildren = union(lh.PlotChildren, plothandles, 'stable');
+            
+            if numel(newlegendstr) > numel(lh.PlotChildren)
+                % MATLAB automatically throws out the extra legend entries
+                % if the number of strings to be added is larger than the
+                % number of supported graphics objects that are children of
+                % the parent axes. legend throws a warning in this case and
+                % we should too
+                warning('legtools:append:IgnoringExtraEntries', ...
+                        'Ignoring extra legend entries');
+            end
             lh.String = newlegendstr;
         end
         
