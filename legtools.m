@@ -102,14 +102,27 @@ classdef legtools
             legtools.verchk()
             lh = legtools.handlecheck('remove', lh);
             
-            % TODO: Throw out values of remidx > than # of legend entries
-            
             % Catch length issues, let MATLAB deal with the rest
             if numel(unique(remidx)) > numel(lh.String)
                 error('legtools:remove:TooManyIndices', ...
                       'Number of unique values in remidx exceeds number of legend entries' ...
                       );
             end
+            
+            % Check remidx for indices greater than the number of legend
+            % entries and throw them out.
+            nlegendentries = numel(lh.PlotChildren);
+            invalididxmask = remidx > nlegendentries;  % Logical test
+            if any(invalididxmask)
+                % If we have any invalid entries, remove them and throw a
+                % warning
+                remidx(invalididxmask) = [];
+                warning('legtools:remove:InvalidIndex', ...
+                        'Removal indices > %u have been ignored', nlegendentries ...
+                       );
+            end
+            
+            
             
             if numel(unique(remidx)) == numel(lh.String)
                 delete(lh);
