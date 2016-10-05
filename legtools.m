@@ -182,9 +182,20 @@ classdef legtools
             newStrings = legtools.strcheck('adddummy', newStrings);
             
             % See if we have a character input for the single addition case
-            % and put it into a cell
+            % and put it into a cell. Double nest the cells so behavior is
+            % consistent with a cell array of cells for multiple new dummy
+            % entries
             if ischar(plotParams)
-                plotParams = {{plotParams}};
+                plotParams = {cellstr(plotParams)};
+            end
+
+            % For the single dummy entry case, make sure each cell of
+            % plotParams is a cell so behavior is sonsistent with a cell
+            % array of cells for multiple new dummy entries
+            if length(newStrings) == 1
+                if ~iscell([plotParams{:}])
+                    plotParams = {plotParams};
+                end
             end
             
             % TODO: More plotParams error checking
