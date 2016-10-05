@@ -201,11 +201,17 @@ classdef legtools
             % TODO: More plotParams error checking
             
             parentaxes = lh.PlotChildren(1).Parent;
-            hold(parentaxes, 'on');  % TODO: Maintain existing hold status
+            
+            washeld = ishold(parentaxes);  % Set a flag for previous hold state ofthe parent axes
+            hold(parentaxes, 'on');
             for ii = 1:length(newStrings)
                 plot(parentaxes, NaN, plotParams{ii}{:});  % Leave input validation up to plot
             end
-            hold(parentaxes, 'off');
+            
+            if ~washeld
+                % If parentaxes wasn't previously held, turn hold back off
+                hold(parentaxes, 'off');
+            end
             
             legtools.append(lh, newStrings);  % Add legend entries
         end
