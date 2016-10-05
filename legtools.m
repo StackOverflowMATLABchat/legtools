@@ -54,7 +54,24 @@ classdef legtools
             
             % Update legend with line object handles & new string array
             newlegendstr = [lh.String newStrings];  % Need to generate this before adding new plot objects
-            lh.PlotChildren = plothandles;
+            
+            % Use the union of the parent axes' Children and the legend
+            % handle's PlotChildren to properly order the legend strings.
+            % Union(A, B, 'Sorted') will return A concatenated with the
+            % values of B not in A, so we have the handles associated with
+            % the existing entries and then the remaining handles in the
+            % order they are plotted.
+            lh.PlotChildren = union(lh.PlotChildren, plothandles, 'stable');
+            
+            if numel(newlegendstr) > numel(lh.PlotChildren)
+                % MATLAB automatically throws out the extra legend entries
+                % if the number of strings to be added is larger than the
+                % number of supported graphics objects that are children of
+                % the parent axes. legend throws a warning in this case and
+                % we should too
+                warning('legtools:append:IgnoringExtraEntries', ...
+                        'Ignoring extra legend entries');
+            end
             lh.String = newlegendstr;
         end
         
@@ -109,6 +126,21 @@ classdef legtools
                       );
             end
             
+            % Check remidx for indices greater than the number of legend
+            % entries and throw them out.
+            nlegendentries = numel(lh.PlotChildren);
+            invalididxmask = remidx > nlegendentries;  % Logical test
+            if any(invalididxmask)
+                % If we have any invalid entries, remove them and throw a
+                % warning
+                remidx(invalididxmask) = [];
+                warning('legtools:remove:InvalidIndex', ...
+                        'Removal indices > %u have been ignored', nlegendentries ...
+                       );
+            end
+            
+            
+            
             if numel(unique(remidx)) == numel(lh.String)
                 delete(lh);
                 warning('legtools:remove:LegendDeleted', ...
@@ -117,6 +149,7 @@ classdef legtools
             else
                 % Check legend entries to be removed for dummy lineseries 
                 % objects and delete them
+                objtodelete = [];
                 count = 1;
                 for ii = remidx
                     % Our dummy lineseries contain a single NaN YData entry
@@ -166,19 +199,36 @@ classdef legtools
             newStrings = legtools.strcheck('adddummy', newStrings);
             
             % See if we have a character input for the single addition case
-            % and put it into a cell
+            % and put it into a cell. Double nest the cells so behavior is
+            % consistent with a cell array of cells for multiple new dummy
+            % entries
             if ischar(plotParams)
-                plotParams = {{plotParams}};
+                plotParams = {cellstr(plotParams)};
+            end
+
+            % For the single dummy entry case, make sure each cell of
+            % plotParams is a cell so behavior is sonsistent with a cell
+            % array of cells for multiple new dummy entries
+            if length(newStrings) == 1
+                if ~iscell([plotParams{:}])
+                    plotParams = {plotParams};
+                end
             end
             
             % TODO: More plotParams error checking
             
             parentaxes = lh.PlotChildren(1).Parent;
+            
+            washeld = ishold(parentaxes);  % Set a flag for previous hold state ofthe parent axes
             hold(parentaxes, 'on');
             for ii = 1:length(newStrings)
                 plot(parentaxes, NaN, plotParams{ii}{:});  % Leave input validation up to plot
             end
-            hold(parentaxes, 'off');
+            
+            if ~washeld
+                % If parentaxes wasn't previously held, turn hold back off
+                hold(parentaxes, 'off');
+            end
             
             legtools.append(lh, newStrings);  % Add legend entries
         end
@@ -216,18 +266,38 @@ classdef legtools
         function [newString] = strcheck(src, newString)
             % Validate the input strings
             if ischar(newString)
-                % Input string is a character array, assume it's a single
-                % string and dump into a cell
-                newString = {newString};
+                % Input string is a character array, use cellstr to convert
+                % to a cell array. See the documentation for cellstr for
+                % its handling of 2D char arrays.
+                newString = cellstr(newString);
+            end
+            
+            if isa(newString, 'string')
+                % MATLAB introduced the String data type in R2016b. To
+                % avoid having to write separate behavior everywhere to
+                % handle this, convert the String array to a Cell array
+                newString = cellstr(newString);
             end
             
             % Check to see if we now have a cell array
             if ~iscell(newString)
                 msgID = sprintf('legtools:%s:InvalidLegendString', src);
-                error(msgID, ...
-                      'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
-                      class(newString), class({}), class('') ...
-                      );
+                
+                if ~verLessThan('matlab', '9.1')
+                    % String data type introduced in MATLAB R2016b so this
+                    % trying to get its class in older versions will error
+                    % out our error
+                    error(msgID, ...
+                          'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'', ''%s'', or ''%s''', ...
+                          class(newString), class(cell(1)), class(char('')), class(string('')) ...
+                          );
+                else
+                    % Error message for MATLAB versions older than R2016b
+                    error(msgID, ...
+                          'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'' or ''%s''', ...
+                          class(newString), class(cell(1)), class(char('')) ...
+                          );
+                end
             end
             
             % Check shape of newStrings and make sure it's 1D
@@ -242,9 +312,9 @@ classdef legtools
                 if ~ischar(newString{ii})
                     msgID = sprintf('legtools:%s:ConvertingInvalidLegendString', src);
                     warning(msgID, ...
-                        'Input legend ''string'' is of type %s, converting to %s', ...
-                        class(newString{ii}), class('') ...
-                        );
+                            'Input legend ''string'' is of type %s, converting to %s', ...
+                            class(newString{ii}), class('') ...
+                            );
                     newString{ii} = num2str(newString{ii});
                 end
             end
