@@ -102,6 +102,8 @@ classdef legtools
             legtools.verchk()
             lh = legtools.handlecheck('remove', lh);
             
+            % TODO: Throw out values of remidx > than # of legend entries
+            
             % Catch length issues, let MATLAB deal with the rest
             if numel(unique(remidx)) > numel(lh.String)
                 error('legtools:remove:TooManyIndices', ...
@@ -117,6 +119,7 @@ classdef legtools
             else
                 % Check legend entries to be removed for dummy lineseries 
                 % objects and delete them
+                objtodelete = [];
                 count = 1;
                 for ii = remidx
                     % Our dummy lineseries contain a single NaN YData entry
@@ -174,7 +177,7 @@ classdef legtools
             % TODO: More plotParams error checking
             
             parentaxes = lh.PlotChildren(1).Parent;
-            hold(parentaxes, 'on');
+            hold(parentaxes, 'on');  % TODO: Maintain existing hold status
             for ii = 1:length(newStrings)
                 plot(parentaxes, NaN, plotParams{ii}{:});  % Leave input validation up to plot
             end
@@ -242,9 +245,9 @@ classdef legtools
                 if ~ischar(newString{ii})
                     msgID = sprintf('legtools:%s:ConvertingInvalidLegendString', src);
                     warning(msgID, ...
-                        'Input legend ''string'' is of type %s, converting to %s', ...
-                        class(newString{ii}), class('') ...
-                        );
+                            'Input legend ''string'' is of type %s, converting to %s', ...
+                            class(newString{ii}), class('') ...
+                            );
                     newString{ii} = num2str(newString{ii});
                 end
             end
