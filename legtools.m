@@ -219,18 +219,38 @@ classdef legtools
         function [newString] = strcheck(src, newString)
             % Validate the input strings
             if ischar(newString)
-                % Input string is a character array, assume it's a single
-                % string and dump into a cell
-                newString = {newString};
+                % Input string is a character array, use cellstr to convert
+                % to a cell array. See the documentation for cellstr for
+                % its handling of 2D char arrays.
+                newString = cellstr(newString);
+            end
+            
+            if isa(newString, 'string')
+                % MATLAB introduced the String data type in R2016b. To
+                % avoid having to write separate behavior everywhere to
+                % handle this, convert the String array to a Cell array
+                newString = cellstr(newString);
             end
             
             % Check to see if we now have a cell array
             if ~iscell(newString)
                 msgID = sprintf('legtools:%s:InvalidLegendString', src);
-                error(msgID, ...
-                      'Invalid Data Type Passed: %s\n\nData must be of type(s): %s, %s', ...
-                      class(newString), class({}), class('') ...
-                      );
+                
+                if ~verLessThan('matlab', '9.1')
+                    % String data type introduced in MATLAB R2016b so this
+                    % trying to get its class in older versions will error
+                    % out our error
+                    error(msgID, ...
+                          'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'', ''%s'', or ''%s''', ...
+                          class(newString), class(cell(1)), class(char('')), class(string('')) ...
+                          );
+                else
+                    % Error message for MATLAB versions older than R2016b
+                    error(msgID, ...
+                          'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'' or ''%s''', ...
+                          class(newString), class(cell(1)), class(char('')) ...
+                          );
+                end
             end
             
             % Check shape of newStrings and make sure it's 1D
