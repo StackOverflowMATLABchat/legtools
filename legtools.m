@@ -84,7 +84,11 @@ classdef legtools
             % real, positive, integer values.
             legtools.verchk()
             
-            % TODO: Add check for presence of order
+            if ~exist('order', 'var') || isempty(order)
+                error('legtools:permute:EmptyOrderInput', ...
+                      'No permute order provided' ...
+                      );
+            end
             
             lh = legtools.handlecheck('permute', lh);
             
