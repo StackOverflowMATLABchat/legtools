@@ -1,4 +1,4 @@
-classdef legtools
+classdef (Abstract) legtools 
     % LEGTOOLS is a MATLAB class definition providing the user with a set of
     % methods to modify existing Legend objects.
     %
@@ -6,19 +6,12 @@ classdef legtools
     % newer.
     %
     % legtools methods:
-    %      append   - Add one or more entries to the end of the legend
-    %      permute  - Rearrange the legend entries
-    %      remove   - Remove one or more legend entries
-    %      adddummy - Add one or more entries to the legend for unsupported graphics objects
+    %     append   - Add one or more entries to the end of the legend
+    %     permute  - Rearrange the legend entries
+    %     remove   - Remove one or more legend entries
+    %     adddummy - Add one or more entries to the legend for unsupported graphics objects
     %
     % See also legend
-    
-    methods
-        function obj = legtools
-            % Dummy constructor so we don't return an empty class instance
-            clear obj
-        end
-    end
     
     methods (Static)
         function append(lh, newStrings)
@@ -143,8 +136,6 @@ classdef legtools
                        );
             end
             
-            
-            
             if numel(unique(remidx)) == numel(lh.String)
                 delete(lh);
                 warning('legtools:remove:LegendDeleted', ...
@@ -219,8 +210,6 @@ classdef legtools
                 end
             end
             
-            % TODO: More plotParams error checking
-            
             parentaxes = lh.PlotChildren(1).Parent;
             
             washeld = ishold(parentaxes);  % Set a flag for previous hold state ofthe parent axes
@@ -242,7 +231,7 @@ classdef legtools
     methods (Static, Access = private)
         function verchk()
             % Throw error if we're not using R2014b or newer
-            if verLessThan('matlab','8.4')
+            if verLessThan('matlab', '8.4')
                 error('legtools:UnsupportedMATLABver', ...
                       'MATLAB releases prior to R2014b are not supported' ...
                       );
@@ -293,13 +282,13 @@ classdef legtools
                     % out our error
                     error(msgID, ...
                           'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'', ''%s'', or ''%s''', ...
-                          class(newString), class(cell(1)), class(char('')), class(string('')) ...
+                          class(newString), class(cell(1)), class(''), class("") ...
                           );
                 else
                     % Error message for MATLAB versions older than R2016b
                     error(msgID, ...
                           'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'' or ''%s''', ...
-                          class(newString), class(cell(1)), class(char('')) ...
+                          class(newString), class(cell(1)), class('') ...
                           );
                 end
             end
