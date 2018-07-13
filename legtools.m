@@ -96,6 +96,13 @@ classdef (Abstract) legtools
             % real, positive, integer values.
             legtools.verchk()
             
+            % Temporarily throw an error for MATLAB >= R2017a
+            if ~verLessThan('matlab', '9.2')
+                error('legtools:permute:NotImplementedError', ...
+                      'legtools.permute is currently not functional in MATLAB >= R2017a', ...
+                      )
+            end
+            
             if ~exist('order', 'var') || isempty(order)
                 error('legtools:permute:EmptyOrderInput', ...
                       'No permute order provided' ...
@@ -134,6 +141,13 @@ classdef (Abstract) legtools
             % object is deleted
             legtools.verchk()
             lh = legtools.handlecheck('remove', lh);
+
+            % Temporarily throw an error for MATLAB >= R2017a
+            if ~verLessThan('matlab', '9.2')
+                error('legtools:remove:NotImplementedError', ...
+                        'legtools.remove is currently not functional in MATLAB >= R2017a', ...
+                        )
+            end
             
             % Catch length issues, let MATLAB deal with the rest
             if numel(unique(remidx)) > numel(lh.String)
