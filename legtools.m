@@ -11,6 +11,10 @@ classdef (Abstract) legtools
     %     remove   - Remove one or more legend entries
     %     adddummy - Add one or more entries to the legend for unsupported graphics objects
     %
+    % NOTE:
+    %      For MATLAB versions >= R2017a, the legend object's 'AutoUpdate'
+    %      property must be set to 'off' before using this utility
+    %
     % See also legend
     
     methods (Static)
@@ -37,6 +41,8 @@ classdef (Abstract) legtools
             end
             
             newStrings = legtools.strcheck('append', newStrings);
+            
+            legtools.autoupdatecheck(lh)
             
             % To make sure we target the right axes, pull the legend's
             % PlotChildren and get their parent axes object
@@ -66,6 +72,19 @@ classdef (Abstract) legtools
                         'Ignoring extra legend entries');
             end
             lh.String = newlegendstr;
+            
+            if ~verLessThan('matlab', '9.2')
+                % The addition of 'AutoUpdate' to legend in R2017a breaks
+                % the functionality of append. With 'AutoUpdate' turned off
+                % we can restore the functionality of legtools, but turning
+                % it back on causes our appended legend entries to be
+                % deleted. Clearing out the undocumented
+                % 'PlotChildrenExcluded' legend property seems to prevent
+                % this from occuring
+                %
+                % NOTE: This is untested in versions < R2017a
+                lh.PlotChildrenExcluded = [];
+            end
         end
         
         
@@ -309,6 +328,18 @@ classdef (Abstract) legtools
                             class(newString{ii}), class('') ...
                             );
                     newString{ii} = num2str(newString{ii});
+                end
+            end
+        end
+        
+        function autoupdatecheck(lh)       
+            % If we're using R2017a or newer, we need to make sure that 
+            % 'AutoUpdate' is off
+            if ~verLessThan('matlab', '9.2')
+                if ~strcmp(lh.AutoUpdate, 'off')
+                    lh.AutoUpdate = 'off';
+                    warning('legtools:autoupdatecheck:AutoUpdateNotOff', ...
+                            'Input legend object''s ''AutoUpdate'' property has been set to ''off''')
                 end
             end
         end

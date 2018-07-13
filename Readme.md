@@ -18,6 +18,8 @@ Append string(s), `newStrings`, to the specified `Legend` object, `legendhandle`
 
 The legend will only be updated with the new strings if the number of strings in the existing legend plus the number of strings in `newStrings` is the same as the number of plots on the associated `Axes` object (e.g. if you have 2 lineseries and 2 legend entries already no changes will be made).
 
+**NOTE**: For MATLAB R2017a or newer, the `legend` object's [`'AutoUpdate'`](https://www.mathworks.com/help/matlab/ref/matlab.graphics.illustration.legend-properties.html#bt7bgi4-1-AutoUpdate) property *must* be set to `'off'` before adding additional lineseries to the plot.
+
 #### Examples
 ##### Adding one legend entry
     % Sample data
