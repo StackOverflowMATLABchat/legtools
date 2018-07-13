@@ -212,6 +212,8 @@ classdef (Abstract) legtools
             
             newStrings = legtools.strcheck('adddummy', newStrings);
             
+            legtools.autoupdatecheck(lh)
+            
             % See if we have a character input for the single addition case
             % and put it into a cell. Double nest the cells so behavior is
             % consistent with a cell array of cells for multiple new dummy
@@ -241,8 +243,20 @@ classdef (Abstract) legtools
                 % If parentaxes wasn't previously held, turn hold back off
                 hold(parentaxes, 'off');
             end
-            
             legtools.append(lh, newStrings);  % Add legend entries
+            
+            if ~verLessThan('matlab', '9.2')
+                % The addition of 'AutoUpdate' to legend in R2017a breaks
+                % the functionality of append. With 'AutoUpdate' turned off
+                % we can restore the functionality of legtools, but turning
+                % it back on causes our appended legend entries to be
+                % deleted. Clearing out the undocumented
+                % 'PlotChildrenExcluded' legend property seems to prevent
+                % this from occuring
+                %
+                % NOTE: This is untested in versions < R2017a
+                lh.PlotChildrenExcluded = [];
+            end
         end
         
     end
