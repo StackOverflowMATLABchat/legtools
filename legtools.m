@@ -1,4 +1,4 @@
-classdef legtools
+classdef (Abstract) legtools 
     % LEGTOOLS is a MATLAB class definition providing the user with a set of
     % methods to modify existing Legend objects.
     %
@@ -6,19 +6,16 @@ classdef legtools
     % newer.
     %
     % legtools methods:
-    %      append   - Add one or more entries to the end of the legend
-    %      permute  - Rearrange the legend entries
-    %      remove   - Remove one or more legend entries
-    %      adddummy - Add one or more entries to the legend for unsupported graphics objects
+    %     append   - Add one or more entries to the end of the legend
+    %     permute  - Rearrange the legend entries
+    %     remove   - Remove one or more legend entries
+    %     adddummy - Add one or more entries to the legend for unsupported graphics objects
+    %
+    % NOTE:
+    %      For MATLAB versions >= R2017a, the legend object's 'AutoUpdate'
+    %      property must be set to 'off' before using this utility
     %
     % See also legend
-    
-    methods
-        function obj = legtools
-            % Dummy constructor so we don't return an empty class instance
-            clear obj
-        end
-    end
     
     methods (Static)
         function append(lh, newStrings)
@@ -44,6 +41,8 @@ classdef legtools
             end
             
             newStrings = legtools.strcheck('append', newStrings);
+            
+            legtools.autoupdatecheck(lh)
             
             % To make sure we target the right axes, pull the legend's
             % PlotChildren and get their parent axes object
@@ -73,6 +72,19 @@ classdef legtools
                         'Ignoring extra legend entries');
             end
             lh.String = newlegendstr;
+            
+            if ~verLessThan('matlab', '9.2')
+                % The addition of 'AutoUpdate' to legend in R2017a breaks
+                % the functionality of append. With 'AutoUpdate' turned off
+                % we can restore the functionality of legtools, but turning
+                % it back on causes our appended legend entries to be
+                % deleted. Clearing out the undocumented
+                % 'PlotChildrenExcluded' legend property seems to prevent
+                % this from occuring
+                %
+                % NOTE: This is untested in versions < R2017a
+                lh.PlotChildrenExcluded = [];
+            end
         end
         
         
@@ -84,7 +96,18 @@ classdef legtools
             % real, positive, integer values.
             legtools.verchk()
             
-            % TODO: Add check for presence of order
+            % Temporarily throw an error for MATLAB >= R2017a
+            if ~verLessThan('matlab', '9.2')
+                error('legtools:permute:NotImplementedError', ...
+                      'legtools.permute is currently not functional in MATLAB >= R2017a', ...
+                      )
+            end
+            
+            if ~exist('order', 'var') || isempty(order)
+                error('legtools:permute:EmptyOrderInput', ...
+                      'No permute order provided' ...
+                      );
+            end
             
             lh = legtools.handlecheck('permute', lh);
             
@@ -118,6 +141,13 @@ classdef legtools
             % object is deleted
             legtools.verchk()
             lh = legtools.handlecheck('remove', lh);
+
+            % Temporarily throw an error for MATLAB >= R2017a
+            if ~verLessThan('matlab', '9.2')
+                error('legtools:remove:NotImplementedError', ...
+                        'legtools.remove is currently not functional in MATLAB >= R2017a', ...
+                        )
+            end
             
             % Catch length issues, let MATLAB deal with the rest
             if numel(unique(remidx)) > numel(lh.String)
@@ -138,8 +168,6 @@ classdef legtools
                         'Removal indices > %u have been ignored', nlegendentries ...
                        );
             end
-            
-            
             
             if numel(unique(remidx)) == numel(lh.String)
                 delete(lh);
@@ -198,6 +226,8 @@ classdef legtools
             
             newStrings = legtools.strcheck('adddummy', newStrings);
             
+            legtools.autoupdatecheck(lh)
+            
             % See if we have a character input for the single addition case
             % and put it into a cell. Double nest the cells so behavior is
             % consistent with a cell array of cells for multiple new dummy
@@ -215,8 +245,6 @@ classdef legtools
                 end
             end
             
-            % TODO: More plotParams error checking
-            
             parentaxes = lh.PlotChildren(1).Parent;
             
             washeld = ishold(parentaxes);  % Set a flag for previous hold state ofthe parent axes
@@ -229,8 +257,20 @@ classdef legtools
                 % If parentaxes wasn't previously held, turn hold back off
                 hold(parentaxes, 'off');
             end
-            
             legtools.append(lh, newStrings);  % Add legend entries
+            
+            if ~verLessThan('matlab', '9.2')
+                % The addition of 'AutoUpdate' to legend in R2017a breaks
+                % the functionality of append. With 'AutoUpdate' turned off
+                % we can restore the functionality of legtools, but turning
+                % it back on causes our appended legend entries to be
+                % deleted. Clearing out the undocumented
+                % 'PlotChildrenExcluded' legend property seems to prevent
+                % this from occuring
+                %
+                % NOTE: This is untested in versions < R2017a
+                lh.PlotChildrenExcluded = [];
+            end
         end
         
     end
@@ -238,7 +278,7 @@ classdef legtools
     methods (Static, Access = private)
         function verchk()
             % Throw error if we're not using R2014b or newer
-            if verLessThan('matlab','8.4')
+            if verLessThan('matlab', '8.4')
                 error('legtools:UnsupportedMATLABver', ...
                       'MATLAB releases prior to R2014b are not supported' ...
                       );
@@ -289,13 +329,13 @@ classdef legtools
                     % out our error
                     error(msgID, ...
                           'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'', ''%s'', or ''%s''', ...
-                          class(newString), class(cell(1)), class(char('')), class(string('')) ...
+                          class(newString), class(cell(1)), class(''), class("") ...
                           );
                 else
                     % Error message for MATLAB versions older than R2016b
                     error(msgID, ...
                           'Invalid Data Type Passed: %s\n\nData must be of type: ''%s'' or ''%s''', ...
-                          class(newString), class(cell(1)), class(char('')) ...
+                          class(newString), class(cell(1)), class('') ...
                           );
                 end
             end
@@ -316,6 +356,18 @@ classdef legtools
                             class(newString{ii}), class('') ...
                             );
                     newString{ii} = num2str(newString{ii});
+                end
+            end
+        end
+        
+        function autoupdatecheck(lh)       
+            % If we're using R2017a or newer, we need to make sure that 
+            % 'AutoUpdate' is off
+            if ~verLessThan('matlab', '9.2')
+                if ~strcmp(lh.AutoUpdate, 'off')
+                    lh.AutoUpdate = 'off';
+                    warning('legtools:autoupdatecheck:AutoUpdateNotOff', ...
+                            'Input legend object''s ''AutoUpdate'' property has been set to ''off''')
                 end
             end
         end
